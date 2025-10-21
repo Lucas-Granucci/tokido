@@ -59,9 +59,7 @@ class TaskManager {
 
   updateAll() {
     this.renderTaskViews();
-    // this.updateStatistics();
-    this.updateOverviewCounter();
-    this.updateCategoryCounter();
+    this.updateOverview();
   }
 
   // -------------------------- Utility Methods --------------------------
@@ -116,11 +114,11 @@ class TaskManager {
   }
 
   getTaskData() {
-    return JSON.parse(localStorage.getItem("task-data") || "[]");
+    return JSON.parse(localStorage.getItem("tokidoTasks") || "[]");
   }
 
   saveTaskData(taskData) {
-    localStorage.setItem("task-data", JSON.stringify(taskData));
+    localStorage.setItem("tokidoTasks", JSON.stringify(taskData));
   }
 
   // -------------------------- Render Management --------------------------
@@ -151,7 +149,7 @@ class TaskManager {
 
   renderDueDateGrid(task_data) {
     const taskGrid = document.createElement("div");
-    taskGrid.className = "grid grid-cols-3 gap-4";
+    taskGrid.className = "grid grid-cols-3 gap-4 mt-4";
 
     task_data.sort((a, b) => new Date(a.dueDate) - new Date(b.dueDate));
     taskGrid.innerHTML = task_data
@@ -295,7 +293,7 @@ class TaskManager {
   }
 
   // -------------------------- Statistics Management --------------------------
-  updateOverviewCounter() {
+  updateOverview() {
     const task_data = this.getTaskData();
     const overviewStatsView = document.getElementById("overviewStats");
 
@@ -344,6 +342,3 @@ class TaskManager {
     };
   }
 }
-
-// Initialize task TaskManager
-const taskManager = new TaskManager();

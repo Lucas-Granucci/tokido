@@ -1,231 +1,93 @@
 <!doctype html>
 <html lang="en">
-    <head>
-        <meta charset="UTF-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <title>TokiDo</title>
-        <link rel="icon" type="image/svg+xml" href="images/icon.svg">
-        <link rel="stylesheet" href="styles.css" />
-        <link
-            rel="stylesheet"
-            href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
-        />
-        <script src="https://cdn.tailwindcss.com"></script>
-    </head>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>TokiDo</title>
+    <link rel="icon" type="image/svg+xml" href="images/icon.svg" />
+    <link rel="stylesheet" href="styles.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <script src="https://cdn.tailwindcss.com"></script>
+  </head>
 
-    <body class="min-h-screen bg-gradient-to-br from-blue-50 to-blue-100 p-6">
-        <div class="max-w-7xl mx-auto">
-            <!-- Main Content Area -->
-            <div class="grid gap-4 grid-cols-1 lg:grid-cols-4">
-                <div class="lg:col-span-1 space-y-4">
-                    <div class="p-4 bg-white rounded-xl shadow-sm">
-                        <button
-                            class="w-full p-3 rounded-lg bg-blue-500 text-white text-lg cursor-pointer transition-colors hover:bg-blue-600"
-                            onclick="toggleNewTaskForm()"
-                        >
-                            <i class="fas fa-plus"></i> New Task
-                        </button>
-                    </div>
-                    <!--Overview Stats-->
-                    <div class="p-4 bg-white rounded-xl shadow-sm">
-                        <h2 class="font-bold text-lg mb-4">Overview</h2>
-                        <div class="space-y-3" id="overviewStats"></div>
-                    </div>
-                    <!--Category Stats-->
-                    <div class="p-4 bg-white rounded-xl shadow-sm">
-                        <h2 class="font-bold text-lg mb-4">Categories</h2>
-                        <div class="space-y-3" id="categoryStats"></div>
-                    </div>
-                    <!-- Quote Bar -->
-                    <div class="bg-white rounded-xl shadow-sm p-4">
-                        <div class="flex gap-4">
-                            <p
-                                class="w-full text-lg text-gray-600 italic leading-relaxed p-3 border-l-4 border-blue-400 bg-blue-50 rounded-r-lg inline-block text-left"
-                            >
-                                "To know ten thousand things, know one well."
-                                <span
-                                    class="block mt-2 text-sm text-gray-500 not-italic"
-                                    >- Miyamoto Musashi</span
-                                >
-                            </p>
-                        </div>
-                    </div>
-                </div>
+  <body class="min-h-screen bg-gradient-to-br from-blue-50 to-blue-100">
+    <nav class="bg-white shadow-sm">
+      <div class="max-w-9xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex justify-between h-16">
+          <div class="flex items-center">
+            <span class="text-xl font-bold text-blue-600">TokiDo</span>
+          </div>
+          <div class="flex space-x-8">
+            <button
+              class="nav-btn inline-flex items-center px-1 pt-2 border-b-2 border-transparent text-sm font-medium text-gray-500 hover:text-gray-700"
+              data-page="tasks"
+            >
+              <i class="fas fa-tasks mr-2"></i> Tasks
+            </button>
+            <button
+              class="nav-btn inline-flex items-center px-1 pt-2 border-b-2 border-transparent text-sm font-medium text-gray-500 hover:text-gray-700"
+              data-page="calendar"
+            >
+              <i class="fas fa-calendar mr-2"></i> Calendar
+            </button>
+            <button
+              class="nav-btn inline-flex items-center px-1 pt-2 border-b-2 border-transparent text-sm font-medium text-gray-500 hover:text-gray-700"
+              data-page="settings"
+            >
+              <i class="fas fa-cog mr-2"></i> Settings
+            </button>
+          </div>
+        </div>
+      </div>
+    </nav>
 
-                <div class="lg:col-span-3 space-y-4">
-                    <!-- View Selection -->
-                    <div
-                        id="viewSelector"
-                        class="flex flex-col bg-white p-4 gap-4 rounded-xl shadow-sm"
-                    >
-                        <!-- Button and View Selectors -->
-                        <div class="flex flex-row gap-4 text-center">
-                            <button
-                                class="flex-1 p-3 rounded-lg border-2 border-blue-500 bg-blue-100 text-center transition-all duration-200"
-                                data-view="dueDate-view"
-                            >
-                                <i class="fas fa-calendar-check mr-2"></i> Due
-                                Date
-                            </button>
-                            <button
-                                class="flex-1 p-3 rounded-lg border-2 border-blue-500 bg-blue-100 text-center transition-all duration-200"
-                                data-view="duration-view"
-                            >
-                                <i class="fas fa-clock mr-2"></i> Duration
-                            </button>
-                            <button
-                                class="flex-1 p-3 rounded-lg border-2 border-blue-500 bg-blue-100 text-center transition-all duration-200"
-                                data-view="category-view"
-                            >
-                                <i class="fas fa-folder mr-2"></i> Category
-                            </button>
-                            <button
-                                class="flex-1 p-3 rounded-lg border-2 border-blue-500 bg-blue-100 text-center transition-all duration-200"
-                                data-view="priority-view"
-                            >
-                                <i class="fas fa-flag mr-2"></i> Priority
-                            </button>
-                        </div>
-
-                        <!-- New Task Section -->
-                        <div
-                            class="flex flex-col hidden p-4 gap-5 bg-blue-50 rounded-lg border border-blue-500"
-                            id="newTaskForm"
-                        >
-                            <h3 class="font-semibold text-lg">
-                                Create New Task
-                            </h3>
-                            <div>
-                                <label
-                                    for="taskName"
-                                    class="block text-sm font-medium text-gray-500 mb-2"
-                                    >Task Name</label
-                                >
-                                <input
-                                    type="text"
-                                    id="taskName"
-                                    class="w-full p-3 border border-gray-300 rounded-lg text-base transition-colors focus:outline-none focus:border-blue-400 focus:ring-4 focus:ring-blue-100"
-                                    placeholder="Task title"
-                                />
-                            </div>
-                            <div class="flex flex-row gap-4">
-                                <div class="flex-1">
-                                    <label
-                                        for="taskCategory"
-                                        class="block text-sm font-medium text-gray-500 mb-2"
-                                        >Category</label
-                                    >
-                                    <select
-                                        id="taskCategory"
-                                        class="p-3 w-full border border-gray-300 rounded-lg bg-white text-base transition-colors focus:outline-none focus:border-blue-400 focus:ring-4 focus:ring-blue-100"
-                                    >
-                                        <option value="School">School</option>
-                                        <option value="Research">
-                                            Research
-                                        </option>
-                                        <option value="Coding">Coding</option>
-                                        <option value="Personal">
-                                            Personal
-                                        </option>
-                                        <option value="Work">Works</option>
-                                        <option value="Other">Other</option>
-                                    </select>
-                                </div>
-                                <div class="flex-1">
-                                    <label
-                                        for="taskPriority"
-                                        class="block text-sm font-medium text-gray-500 mb-2"
-                                        >Priority</label
-                                    >
-                                    <select
-                                        id="taskPriority"
-                                        class="p-3 w-full border border-gray-300 rounded-lg bg-white text-base transition-colors focus:outline-none focus:border-blue-400 focus:ring-4 focus:ring-blue-100"
-                                    >
-                                        <option value="High">High</option>
-                                        <option value="Medium">Medium</option>
-                                        <option value="Low">Low</option>
-                                    </select>
-                                </div>
-                                <div class="flex-1">
-                                    <label
-                                        for="taskDuration"
-                                        class="block text-sm font-medium text-gray-500 mb-2"
-                                        >Estimated Duration</label
-                                    >
-                                    <select
-                                        id="taskDuration"
-                                        class="p-3 w-full border border-gray-300 rounded-lg bg-white text-base transition-colors focus:outline-none focus:border-blue-400 focus:ring-4 focus:ring-blue-100"
-                                    >
-                                        <option value="<5 min">&lt5 min</option>
-                                        <option value="<15 min">
-                                            &lt15 min
-                                        </option>
-                                        <option value="<30 min">
-                                            &lt30 min
-                                        </option>
-                                        <option value="<1 hour">
-                                            &lt1 hour
-                                        </option>
-                                        <option value="<2 hours">
-                                            &lt2 hours
-                                        </option>
-                                        <option value="2+ hours">
-                                            2+ hours
-                                        </option>
-                                    </select>
-                                </div>
-                                <div class="flex-1">
-                                    <label
-                                        for="taskDueDate"
-                                        class="block text-sm font-medium text-gray-500 mb-2"
-                                        >Due Date</label
-                                    >
-                                    <input
-                                        type="date"
-                                        id="taskDueDate"
-                                        name="taskDueDate"
-                                        class="p-3 w-full border border-gray-300 rounded-lg bg-white text-base transition-colors focus:outline-none focus:border-blue-400 focus:ring-4 focus:ring-blue-100"
-                                    />
-                                </div>
-                            </div>
-                              <div class="flex flex-row gap-4 h-12 text-center">
-                                <button
-                                    onclick="toggleNewTaskForm()"
-                                    class="p-3 flex-1 border-2 border-blue-500 bg-white rounded-lg cursor-pointer flex justify-center items-center gap-2 font-medium transition-colors hover:bg-blue-50"
-                                >
-                                    Cancel
-                                </button>
-                                <button
-                                    id="addTaskButton"
-                                    onclick="toggleNewTaskForm()"
-                                    class="p-3 flex-1 bg-blue-500 text-white border-none rounded-lg cursor-pointer flex justify-center items-center gap-2 font-medium transition-colors hover:bg-blue-600"
-                                >
-                                    Add Task
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                    <!-- Task Section -->
-                    <div class="space-y-4">
-                        <div class="view" id="dueDate-view"></div>
-                        <div class="view" id="duration-view"></div>
-                        <div class="view" id="category-view"></div>
-                        <div class="view" id="priority-view"></div>
-                    </div>
-                </div>
+    <div class="max-w-9xl mx-auto p-6">
+      <!-- Main Content Area -->
+      <div class="grid gap-4 grid-cols-1 lg:grid-cols-4">
+        <div class="lg:col-span-1 space-y-4">
+          <!--Quick Actions-->
+          <div class="p-4 flex flex-col gap-3 bg-white rounded-xl shadow-sm">
+            <button
+              class="w-full p-2 rounded-lg bg-blue-500 text-white text-base cursor-pointer transition-colors hover:bg-blue-600"
+              id="toggleTaskForm"
+            >
+              <i class="fas fa-plus"></i> New Task
+            </button>
+            <button
+              class="w-full p-2 rounded-lg border-2 border-blue-500 text-base cursor-pointer transition-colors hover:bg-blue-50"
+              id="toggleEventForm"
+            >
+              <i class="fas fa-calendar"></i> Add Event
+            </button>
+          </div>
+          <div class="p-4 bg-white rounded-xl shadow-sm">
+            <h2 class="font-bold text-lg mb-4">Overview</h2>
+            <div class="space-y-3" id="overviewStats"></div>
+          </div>
+          <!-- Quote Bar -->
+          <div class="bg-white rounded-xl shadow-sm p-4">
+            <div class="flex gap-4">
+              <p
+                class="w-full text-lg text-gray-600 italic leading-relaxed p-3 border-l-4 border-blue-400 bg-blue-50 rounded-r-lg inline-block text-left"
+              >
+                "To know ten thousand things, know one well."
+                <span class="block mt-2 text-sm text-gray-500 not-italic"
+                  >- Miyamoto Musashi</span
+                >
+              </p>
             </div>
+          </div>
         </div>
 
-        <script>
-            function toggleNewTaskForm() {
-                var newTaskForm = document.getElementById("newTaskForm");
-                newTaskForm.classList.toggle("hidden");
-            }
-            function toggleViewSelector() {
-                var viewSelector = document.getElementById("viewSelector");
-                viewSelector.classList.toggle("hidden");
-            }
-        </script>
-        <script src="script.js" defer></script>
-    </body>
+        <div class="lg:col-span-3 space-y-4" id="main-content"></div>
+      </div>
+    </div>
+
+    <script src="js/taskManager.js" defer></script>
+    <script src="js/calendarManager.js" defer></script>
+    <script src="js/app.js" defer></script>
+  </body>
 </html>
