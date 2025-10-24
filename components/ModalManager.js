@@ -1,13 +1,14 @@
-import { modalTemplates } from "./modals.js";
-
 class ModalManager {
   static init() {
-    // Inject all modals into DOM
-    Object.values(modalTemplates).forEach((template) => {
-      document.body.insertAdjacentHTML("beforeend", template);
-    });
-
-    this.bindGlobalEvents();
+    if (window.modalTemplates) {
+      Object.values(window.modalTemplates).forEach((template) => {
+        document.body.insertAdjacentHTML("beforeend", template);
+      });
+      this.bindGlobalEvents();
+      console.log("ModalManager initialized");
+    } else {
+      console.error("modalTemplates not found - check if modals.html loaded");
+    }
   }
 
   static bindGlobalEvents() {

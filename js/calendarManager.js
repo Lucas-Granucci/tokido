@@ -345,6 +345,7 @@ class CalendarManager {
 
   // -------------------------- Event Management ------------------------
   handleNewEvent() {
+    console.log("MADE NEW EVENT");
     const newEvent = this.createEvent();
     this.addEvent(newEvent);
   }
