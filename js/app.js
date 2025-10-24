@@ -1,5 +1,3 @@
-import "../components/ModalManager.js";
-
 class App {
   constructor() {
     this.currentPage = "tasks";

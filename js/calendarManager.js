@@ -16,13 +16,40 @@ class CalendarManager {
       calendarPrev: () => this.previousMonth(),
       calendarNext: () => this.nextMonth(),
       addEventButton: () => this.handleNewEvent(),
-      eventAllDay: (e) => this.toggleTimeInputs(!e.target.checked),
-      eventMultiDay: (e) => this.toggleEndDateInput(e.target.checked),
+      deleteEventButton: () => this.deleteCurrentlyEditingEvent(),
+      editSaveEventButton: () => this.saveEventChanges(),
+
+      eventAllDay: (e) =>
+        this.toggleTimeInputs(!e.target.checked, "timeFields"),
+      eventMultiDay: (e) =>
+        this.toggleEndDateInput(
+          e.target.checked,
+          "eventStartDateLabel",
+          "eventEndDateField",
+        ),
+
+      editEventAllDay: (e) =>
+        this.toggleTimeInputs(!e.target.checked, "editTimeFields"),
+      editEventMultiDay: (e) =>
+        this.toggleEndDateInput(
+          e.target.checked,
+          "editEventStartDateLabel",
+          "editEventEndDateField",
+        ),
     };
 
     Object.entries(elements).forEach(([id, handler]) => {
       const element = document.getElementById(id);
       element?.addEventListener("click", handler);
+    });
+
+    // Bind listener for clicking calendar events
+    document.addEventListener("click", (e) => {
+      const eventElement = e.target.closest("[data-event-id]");
+      if (eventElement) {
+        const eventId = eventElement.getAttribute("data-event-id");
+        this.editEvent(eventId);
+      }
     });
   }
 
@@ -38,13 +65,13 @@ class CalendarManager {
   }
 
   // -------------------------- UI Controls --------------------------
-  toggleTimeInputs(show) {
-    document.getElementById("timeFields")?.classList.toggle("hidden", !show);
+  toggleTimeInputs(show, timeFieldsId) {
+    document.getElementById(timeFieldsId)?.classList.toggle("hidden", !show);
   }
 
-  toggleEndDateInput(show) {
-    const endDateInput = document.getElementById("eventEndDateField");
-    const startDateLabel = document.getElementById("eventStartDateLabel");
+  toggleEndDateInput(show, startDateLabelId, endDateFieldId) {
+    const startDateLabel = document.getElementById(startDateLabelId);
+    const endDateInput = document.getElementById(endDateFieldId);
 
     endDateInput?.classList.toggle("hidden", !show);
     if (startDateLabel) {
@@ -160,8 +187,9 @@ class CalendarManager {
       : "";
 
     return `
-      <div class="calendarEvent text-xs p-1 bg-blue-100 text-blue-500 ${colorClass} ${positionClass} truncate cursor-pointer hover:bg-blue-200 h-6 flex items-center" 
-        data-edit-event="${event.id}" title="${event.name}">
+      <div class="text-xs p-1 bg-blue-100 text-blue-500 ${colorClass} ${positionClass} truncate cursor-pointer hover:bg-blue-200 h-6 flex items-center" 
+        title="${event.name}"
+        data-event-id="${event.id}">
         ${content}
       </div>
     `;
@@ -345,7 +373,6 @@ class CalendarManager {
 
   // -------------------------- Event Management ------------------------
   handleNewEvent() {
-    console.log("MADE NEW EVENT");
     const newEvent = this.createEvent();
     this.addEvent(newEvent);
   }
@@ -388,6 +415,84 @@ class CalendarManager {
       (event) => event.id !== eventId,
     );
     this.saveEventData(eventData);
+    this.renderCalendar();
+  }
+
+  deleteCurrentlyEditingEvent() {
+    const eventId = this.currentEditingEventId;
+    this.deleteEventData(eventId);
+    ModalManager.hide("editEventModal");
+  }
+
+  editEvent(eventId) {
+    const event = this.getEventData().find((e) => e.id === parseInt(eventId));
+    if (!event) return;
+
+    this.populateEditForm(event);
+    ModalManager.show("editEventModal");
+    this.currentEditingEventId = event.id;
+  }
+
+  populateEditForm(event) {
+    // Fill form fields with event data
+    document.getElementById("editEventName").value = event.name || "";
+    document.getElementById("editEventCategory").value =
+      event.category || "Other";
+    document.getElementById("editEventStartDate").value = event.startDate || "";
+    document.getElementById("editEventEndDate").value = event.endDate || "";
+    document.getElementById("editEventStartTime").value = event.startTime || "";
+    document.getElementById("editEventEndTime").value = event.endTime || "";
+
+    // Set toggle states
+    document.getElementById("editEventAllDay").checked = event.allDay || false;
+    document.getElementById("editEventMultiDay").checked =
+      event.multiDay || false;
+
+    if (event.allDay) {
+      this.toggleTimeInputs(false, "editTimeFields");
+    }
+    if (event.multiDay) {
+      this.toggleEndDateInput(
+        true,
+        "editEventStartDateLabel",
+        "editEventEndDateField",
+      );
+    }
+  }
+
+  saveEventChanges() {
+    const eventId = this.currentEditingEventId;
+    const eventData = this.getEventData();
+    const eventIndex = eventData.findIndex((e) => e.id === eventId);
+
+    if (eventIndex === -1) return;
+
+    // Get details from edit modal HTML components
+    const name = document.getElementById("editEventName").value;
+    const startDate = document.getElementById("editEventStartDate").value;
+    const endDate = document.getElementById("editEventEndDate").value;
+    const startTime = document.getElementById("editEventStartTime").value;
+    const endTime = document.getElementById("editEventEndTime").value;
+    const category = document.getElementById("editEventCategory").value;
+
+    const allDay = document.getElementById("editEventAllDay").checked;
+    const multiDay = document.getElementById("editEventMultiDay").checked;
+
+    const updatedEvent = {
+      id: eventId,
+      name: name,
+      category: category,
+      allDay: allDay,
+      multiDay: multiDay,
+      startDate: startDate,
+      endDate: multiDay ? endDate : startDate,
+      startTime: allDay ? null : startTime,
+      endTime: allDay ? null : endTime,
+    };
+
+    eventData[eventIndex] = updatedEvent;
+    this.saveEventData(eventData);
+    ModalManager.hide("editEventModal");
     this.renderCalendar();
   }
 }

@@ -250,9 +250,150 @@ window.modalTemplates = {
   `,
 
   editEventModal: `
-    <div id="editEventModal" class="modal hidden">
-      <div class="modal-content">
-      
+    <div id="editEventModal" class="modal hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+      <div class="bg-white rounded-lg shadow-xl max-w-4xl w-full max-h-[90vh] overflow-y-auto">
+        <div class="flex flex-col p-6 gap-5 bg-white rounded-lg">
+          <div class="flex flex-row justify-between">
+            <h3 class="font-semibold text-lg">Edit Event</h3>
+            <button id="deleteEventButton" class="cursor-pointer hover:text-red-500 transition-colors"><i class="fas fa-trash"></i></button>
+          </div>
+
+          <!-- Event Name -->
+          <div>
+            <label
+              for="editEventName"
+              class="block text-sm font-medium text-gray-500 mb-2"
+              >Event Name</label
+            >
+            <input
+              type="text"
+              id="editEventName"
+              class="w-full p-3 border border-gray-300 rounded-lg text-base transition-colors focus:outline-none focus:border-blue-400 focus:ring-4 focus:ring-blue-100"
+              placeholder="Event title"
+            />
+          </div>
+
+          <!-- Date Range -->
+          <div class="flex flex-row gap-4">
+            <div class="flex-1">
+              <label
+                for="editEventStartDate"
+                class="block text-sm font-medium text-gray-500 mb-2"
+                id="editEventStartDateLabel"
+                >Date</label
+              >
+              <input
+                type="date"
+                id="editEventStartDate"
+                name="editEventStartDate"
+                class="p-3 w-full border border-gray-300 rounded-lg bg-white text-base transition-colors focus:outline-none focus:border-blue-400 focus:ring-4 focus:ring-blue-100"
+              />
+            </div>
+            <div class="flex-1 hidden" id="editEventEndDateField">
+              <label
+                for="editEventEndDate"
+                class="block text-sm font-medium text-gray-500 mb-2"
+                >End Date</label
+              >
+              <input
+                type="date"
+                id="editEventEndDate"
+                name="editEventEndDate"
+                class="p-3 w-full border border-gray-300 rounded-lg bg-white text-base transition-colors focus:outline-none focus:border-blue-400 focus:ring-4 focus:ring-blue-100"
+              />
+            </div>
+          </div>
+
+          <!-- Time Options -->
+          <div class="flex flex-row gap-4" id="editTimeFields">
+            <div class="flex-1">
+              <label
+                for="editEventStartTime"
+                class="block text-sm font-meedium text-gray-500 mb-2"
+                >Start Time</label
+              >
+              <input
+                type="time"
+                id="editEventStartTime"
+                class="p-3 w-full border border-gray-300 rounded-lg bg-white text-base transition-colors focus:outline-none focus:border-blue-400 focus:ring-4 focus:ring-blue-100"
+              />
+            </div>
+            <div class="flex-1">
+              <label
+                for="editEventEndTime"
+                class="block text-sm font-meedium text-gray-500 mb-2"
+                >End Time</label
+              >
+              <input
+                type="time"
+                id="editEventEndTime"
+                class="p-3 w-full border border-gray-300 rounded-lg bg-white text-base transition-colors focus:outline-none focus:border-blue-400 focus:ring-4 focus:ring-blue-100"
+              />
+            </div>
+          </div>
+
+          <!-- Category, Multi-Day & All Day Toggle -->
+          <div class="flex flex-row gap-4">
+            <div class="flex-1">
+              <label
+                for="editEventCategory"
+                class="block text-sm font-medium text-gray-500 mb-2"
+                >Category</label
+              >
+              <select
+                id="editEventCategory"
+                class="p-3 w-full border border-gray-300 rounded-lg bg-white text-base transition-colors focus:outline-none focus:border-blue-400 focus:ring-4 focus:ring-blue-100"
+              >
+                <option value="School">School</option>
+                <option value="Research">Research</option>
+                <option value="Coding">Coding</option>
+                <option value="Personal">Personal</option>
+                <option value="Work">Works</option>
+                <option value="Other">Other</option>
+              </select>
+            </div>
+            <div class="flex-1 flex flex-row gap-4">
+              <!-- Multi-Day Toggle -->
+              <div class="flex h-full items-center pt-6">
+                <label class="flex cursor-pointer items-center">
+                  <input type="checkbox" id="editEventMultiDay" class="peer sr-only" />
+                  <div
+                    class="peer relative h-6 w-11 rounded-full bg-gray-200 peer-checked:bg-blue-600 peer-focus:outline-none after:absolute after:start-[2px] after:top-[2px] after:h-5 after:w-5 after:rounded-full after:border after:border-gray-300 after:bg-white after:transition-all after:content-[''] peer-checked:after:translate-x-full peer-checked:after:border-white rtl:peer-checked:after:-translate-x-full"
+                  ></div>
+                  <span class="ms-3 text-sm font-medium text-gray-500"
+                    >Multi-Day Event</span
+                  >
+                </label>
+              </div>
+              <!-- All Day Toggle -->
+              <div class="flex h-full items-center pt-6">
+                <label class="flex cursor-pointer items-center">
+                  <input type="checkbox" id="editEventAllDay" class="peer sr-only" />
+                  <div
+                    class="peer relative h-6 w-11 rounded-full bg-gray-200 peer-checked:bg-blue-600 peer-focus:outline-none after:absolute after:start-[2px] after:top-[2px] after:h-5 after:w-5 after:rounded-full after:border after:border-gray-300 after:bg-white after:transition-all after:content-[''] peer-checked:after:translate-x-full peer-checked:after:border-white rtl:peer-checked:after:-translate-x-full"
+                  ></div>
+                  <span class="ms-3 text-sm font-medium text-gray-500"
+                    >All Day Event</span
+                  >
+                </label>
+              </div>
+            </div>
+          </div>
+          <div class="flex flex-row gap-4 h-12 text-center">
+            <button
+              id="editCancelEventButton"
+              class="p-3 flex-1 border-2 border-blue-500 bg-white rounded-lg cursor-pointer flex justify-center items-center gap-2 font-medium transition-colors hover:bg-blue-50"
+            >
+              Cancel
+            </button>
+            <button
+              id="editSaveEventButton"
+              class="p-3 flex-1 bg-blue-500 text-white border-none rounded-lg cursor-pointer flex justify-center items-center gap-2 font-medium transition-colors hover:bg-blue-600"
+            >
+              Save Changes
+            </button>
+          </div>
+        </div>
       </div>
     </div>
   `,

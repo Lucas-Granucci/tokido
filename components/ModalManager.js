@@ -18,7 +18,9 @@ class ModalManager {
         e.target.id === "cancelNewTaskButton" ||
         e.target.id === "cancelNewEventButton" ||
         e.target.id === "addTaskButton" ||
-        e.target.id === "addEventButton"
+        e.target.id === "addEventButton" ||
+        e.target.id === "editCancelEventButton" ||
+        e.target.id === "editSaveEventButton"
       ) {
         this.hideAll();
       }
