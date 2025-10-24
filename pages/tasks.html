@@ -31,113 +31,12 @@
       </button>
     </div>
 
-    <!-- New Task Section -->
-    <div
-      class="flex flex-col hidden p-4 gap-5 bg-blue-50 rounded-lg border border-blue-500"
-      id="newTaskForm"
-    >
-      <h3 class="font-semibold text-lg">Create New Task</h3>
-      <div>
-        <label
-          for="taskName"
-          class="block text-sm font-medium text-gray-500 mb-2"
-          >Task Name</label
-        >
-        <input
-          type="text"
-          id="taskName"
-          class="w-full p-3 border border-gray-300 rounded-lg text-base transition-colors focus:outline-none focus:border-blue-400 focus:ring-4 focus:ring-blue-100"
-          placeholder="Task title"
-        />
-      </div>
-      <div class="flex flex-row gap-4">
-        <div class="flex-1">
-          <label
-            for="taskCategory"
-            class="block text-sm font-medium text-gray-500 mb-2"
-            >Category</label
-          >
-          <select
-            id="taskCategory"
-            class="p-3 w-full border border-gray-300 rounded-lg bg-white text-base transition-colors focus:outline-none focus:border-blue-400 focus:ring-4 focus:ring-blue-100"
-          >
-            <option value="School">School</option>
-            <option value="Research">Research</option>
-            <option value="Coding">Coding</option>
-            <option value="Personal">Personal</option>
-            <option value="Work">Works</option>
-            <option value="Other">Other</option>
-          </select>
-        </div>
-        <div class="flex-1">
-          <label
-            for="taskPriority"
-            class="block text-sm font-medium text-gray-500 mb-2"
-            >Priority</label
-          >
-          <select
-            id="taskPriority"
-            class="p-3 w-full border border-gray-300 rounded-lg bg-white text-base transition-colors focus:outline-none focus:border-blue-400 focus:ring-4 focus:ring-blue-100"
-          >
-            <option value="High">High</option>
-            <option value="Medium">Medium</option>
-            <option value="Low">Low</option>
-          </select>
-        </div>
-        <div class="flex-1">
-          <label
-            for="taskDuration"
-            class="block text-sm font-medium text-gray-500 mb-2"
-            >Estimated Duration</label
-          >
-          <select
-            id="taskDuration"
-            class="p-3 w-full border border-gray-300 rounded-lg bg-white text-base transition-colors focus:outline-none focus:border-blue-400 focus:ring-4 focus:ring-blue-100"
-          >
-            <option value="<5 min">&lt5 min</option>
-            <option value="<15 min">&lt15 min</option>
-            <option value="<30 min">&lt30 min</option>
-            <option value="<1 hour">&lt1 hour</option>
-            <option value="<2 hours">&lt2 hours</option>
-            <option value="2+ hours">2+ hours</option>
-          </select>
-        </div>
-        <div class="flex-1">
-          <label
-            for="taskDueDate"
-            class="block text-sm font-medium text-gray-500 mb-2"
-            >Due Date</label
-          >
-          <input
-            type="date"
-            id="taskDueDate"
-            name="taskDueDate"
-            class="p-3 w-full border border-gray-300 rounded-lg bg-white text-base transition-colors focus:outline-none focus:border-blue-400 focus:ring-4 focus:ring-blue-100"
-          />
-        </div>
-      </div>
-      <div class="flex flex-row gap-4 h-12 text-center">
-        <button
-          onclick="window.app.toggleNewTaskForm()"
-          class="p-3 flex-1 border-2 border-blue-500 bg-white rounded-lg cursor-pointer flex justify-center items-center gap-2 font-medium transition-colors hover:bg-blue-50"
-        >
-          Cancel
-        </button>
-        <button
-          id="addTaskButton"
-          onclick="window.app.toggleNewTaskForm()"
-          class="p-3 flex-1 bg-blue-500 text-white border-none rounded-lg cursor-pointer flex justify-center items-center gap-2 font-medium transition-colors hover:bg-blue-600"
-        >
-          Add Task
-        </button>
-      </div>
+    <!-- Task Section -->
+    <div class="space-y-4">
+      <div class="view" id="dueDate-view"></div>
+      <div class="view" id="duration-view"></div>
+      <div class="view" id="category-view"></div>
+      <div class="view" id="priority-view"></div>
     </div>
-  </div>
-  <!-- Task Section -->
-  <div class="space-y-4">
-    <div class="view" id="dueDate-view"></div>
-    <div class="view" id="duration-view"></div>
-    <div class="view" id="category-view"></div>
-    <div class="view" id="priority-view"></div>
   </div>
 </div>

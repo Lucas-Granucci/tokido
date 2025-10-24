@@ -1,58 +1,32 @@
 class CalendarManager {
   constructor() {
     this.currentDate = new Date();
+    this.MAX_EVENT_ROWS = 3;
     this.init();
   }
 
   init() {
     this.bindEvents();
-    this.updateAll();
-  }
-
-  bindEvents() {
-    const prevButton = document.getElementById("calendarPrev");
-    const nextButton = document.getElementById("calendarNext");
-    const newEventButton = document.getElementById("newEventButton");
-    const allDayToggle = document.getElementById("eventAllDay");
-    const multiDayToggle = document.getElementById("eventMultiDay");
-
-    if (prevButton) {
-      prevButton.addEventListener("click", () => {
-        this.previousMonth();
-      });
-    }
-
-    if (nextButton) {
-      nextButton.addEventListener("click", () => {
-        this.nextMonth();
-      });
-    }
-
-    if (newEventButton) {
-      newEventButton.addEventListener("click", () => {
-        this.handleNewEvent();
-      });
-    }
-
-    if (allDayToggle) {
-      allDayToggle.addEventListener("click", (e) => {
-        this.toggleTimeInputs(!e.target.checked);
-      });
-    }
-
-    if (multiDayToggle) {
-      multiDayToggle.addEventListener("click", (e) => {
-        this.toggleEndDateInput(e.target.checked);
-      });
-    }
-  }
-
-  updateAll() {
-    this.currentDate = new Date();
     this.renderCalendar();
   }
 
-  // -------------------------- Utility Methods --------------------------
+  // -------------------------- Event Binding --------------------------
+  bindEvents() {
+    const elements = {
+      calendarPrev: () => this.previousMonth(),
+      calendarNext: () => this.nextMonth(),
+      addEventButton: () => this.handleNewEvent(),
+      eventAllDay: (e) => this.toggleTimeInputs(!e.target.checked),
+      eventMultiDay: (e) => this.toggleEndDateInput(e.target.checked),
+    };
+
+    Object.entries(elements).forEach(([id, handler]) => {
+      const element = document.getElementById(id);
+      element?.addEventListener("click", handler);
+    });
+  }
+
+  // -------------------------- Calendar Navigation --------------------------
   previousMonth() {
     this.currentDate.setMonth(this.currentDate.getMonth() - 1);
     this.renderCalendar();
@@ -63,21 +37,22 @@ class CalendarManager {
     this.renderCalendar();
   }
 
+  // -------------------------- UI Controls --------------------------
   toggleTimeInputs(show) {
-    const timeInputs = document.getElementById("timeFields");
-    if (timeInputs) {
-      timeInputs.classList.toggle("hidden", !show);
-    }
+    document.getElementById("timeFields")?.classList.toggle("hidden", !show);
   }
 
   toggleEndDateInput(show) {
     const endDateInput = document.getElementById("eventEndDateField");
-    if (endDateInput) {
-      endDateInput.classList.toggle("hidden", !show);
-    }
     const startDateLabel = document.getElementById("eventStartDateLabel");
-    startDateLabel.textContent = show ? "Start Date" : "Date";
+
+    endDateInput?.classList.toggle("hidden", !show);
+    if (startDateLabel) {
+      startDateLabel.textContent = show ? "Start Date" : "Date";
+    }
   }
+
+  // -------------------------- Data Management --------------------------
   getEventData() {
     return JSON.parse(localStorage.getItem("tokidoEvents") || "[]");
   }
@@ -89,10 +64,8 @@ class CalendarManager {
   // ------------------------- Render Management --------------------------
   renderCalendar() {
     const calendarContainer = document.getElementById("calendar");
-    if (!calendarContainer) return;
-
-    // Update year/month display
     const monthYearElement = document.getElementById("current-month");
+
     if (monthYearElement) {
       monthYearElement.textContent = this.currentDate.toLocaleDateString(
         "en-US",
@@ -103,10 +76,99 @@ class CalendarManager {
       );
     }
 
-    calendarContainer.innerHTML = this.generateCalendarHTML();
+    if (calendarContainer) {
+      const calendarData = this.generateCalendarData();
+      calendarContainer.innerHTML = this.renderCalendarGrid(calendarData);
+    }
   }
 
-  generateCalendarHTML() {
+  renderCalendarGrid(grid) {
+    const daysOfWeek = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+
+    return `
+    <div class="grid grid-cols-7 gap-1 mb-4">
+      ${daysOfWeek
+        .map(
+          (day) =>
+            `<div class="p-2 text-center text-sm font-medium text-gray-500">${day}</div>`,
+        )
+        .join("")}
+    </div>
+    <div class="grid grid-cols-7">
+      ${grid.map((day) => this.renderDayCell(day)).join("")}
+    </div>
+  `;
+  }
+
+  renderDayCell(day) {
+    if (day.isEmpty) {
+      return `<div class="h-32 p-1 bg-gray-50"></div>`;
+    }
+
+    const today = new Date();
+    const isToday = day.date.toDateString() === today.toDateString();
+    const todayStyling = isToday
+      ? "text-blue-600 font-semibold rounded-lg text-white bg-blue-600"
+      : "text-gray-900";
+
+    const hiddenEventCount =
+      day.events.length - day.slots.filter(Boolean).length;
+
+    return `
+    <div class="h-32 border relative">
+      <div class="flex justify-between items-start">
+        <span class="text-sm p-1 font-medium ${todayStyling}">${day.day}</span>
+      </div>
+
+      <div class="space-y-1">
+        ${day.slots
+          .map((slot, index) =>
+            slot ? this.renderEvent(slot, index) : '<div class="h-6"></div>',
+          )
+          .join("")}
+      </div>
+
+      ${
+        hiddenEventCount > 0
+          ? `
+        <button class="text-xs text-blue-600 font-medium hover:text-blue-800 day-more-btn" 
+          data-date="${day.date.toISOString()}">
+          +${hiddenEventCount} more
+        </button>
+      `
+          : ""
+      }
+    </div>
+  `;
+  }
+
+  renderEvent(slot) {
+    const { event, isStart, isEnd } = slot;
+    const isAllDay = event.allDay;
+
+    const middleFormat = "border-l-0 border-r-0 rounded-none";
+    const positionClass = `${isStart ? "rounded-l border-r-0 ml-1" : middleFormat} ${isEnd ? "rounded-r border-l-0 mr-1" : middleFormat}`;
+
+    const colorClass = isAllDay
+      ? "bg-purple-100 text-purple-500 hover:bg-purple-200"
+      : "bg-blue-100 text-blue-500 hover:bg-blue-200";
+
+    const content = isStart
+      ? isAllDay
+        ? `${event.name}`
+        : `<span class="text-xs opacity-75">${event.startTime}</span> <span class="ml-1">${event.name}</span>`
+      : "";
+
+    return `
+      <div class="calendarEvent text-xs p-1 bg-blue-100 text-blue-500 ${colorClass} ${positionClass} truncate cursor-pointer hover:bg-blue-200 h-6 flex items-center" 
+        data-edit-event="${event.id}" title="${event.name}">
+        ${content}
+      </div>
+    `;
+  }
+
+  // -------------------------- Calendar Data Generation --------------------------
+  generateCalendarData() {
     const year = this.currentDate.getFullYear();
     const month = this.currentDate.getMonth();
 
@@ -115,129 +177,178 @@ class CalendarManager {
     const startingDay = firstDay.getDay(); // 0 = Sunday
     const daysInMonth = lastDay.getDate();
 
-    const today = new Date();
-    const isToday = (day) => {
-      return (
-        day === today.getDate() &&
-        month === today.getMonth() &&
-        year === today.getFullYear()
-      );
-    };
+    const totalCells = Math.ceil((startingDay + daysInMonth) / 7) * 7;
 
-    let calendarHTML = `
-      <div class="grid grid-cols-7 gap-1 mb-4">
-        <div class="p-2 text-center text-sm font-medium text-gray-500">Sun</div>
-        <div class="p-2 text-center text-sm font-medium text-gray-500">Mon</div>
-        <div class="p-2 text-center text-sm font-medium text-gray-500">Tue</div>
-        <div class="p-2 text-center text-sm font-medium text-gray-500">Wed</div>
-        <div class="p-2 text-center text-sm font-medium text-gray-500">Thu</div>
-        <div class="p-2 text-center text-sm font-medium text-gray-500">Fri</div>
-        <div class="p-2 text-center text-sm font-medium text-gray-500">Sat</div>
-      </div>
-      <div class="grid grid-cols-7">
-    `;
+    const grid = [];
+    for (let i = 0; i < totalCells; i++) {
+      if (i < startingDay || i >= startingDay + daysInMonth) {
+        grid.push({
+          isEmpty: true,
+          slots: Array(this.MAX_EVENT_ROWS).fill(null),
+        }); // Empty day
+      } else {
+        const day = i - startingDay + 1;
+        const date = new Date(year, month, day);
 
-    // Empty starting days
-    for (let i = 0; i < startingDay; i++) {
-      calendarHTML += `<div class="h-28 p-1 bg-gray-50"></div>`;
+        grid.push({
+          day,
+          date,
+          events: this.getEventsForDay(year, month, day),
+          slots: Array(this.MAX_EVENT_ROWS).fill(null),
+        });
+      }
     }
 
-    for (let day = 1; day <= daysInMonth; day++) {
-      const targetDate = new Date(year, month, day);
-      const dayEvents = this.getEventsForDay(year, month, day);
-
-      const multiDayEvents = dayEvents.filter((event) => event.multiDay);
-      const singleDayEvents = dayEvents.filter((event) => !event.multiDay);
-
-      const todayStyling = isToday(day)
-        ? "text-blue-600 font-semibold rounded-lg text-white bg-blue-600"
-        : "text-gray-900";
-
-      calendarHTML += `
-        <div class="h-28 border ">
-          <div class="flex justify-between items-start">
-            <span class="text-sm p-1 font-medium ${todayStyling}">${day}</span>
-          </div>
-
-          <!-- Multi-Day Events Section -->
-          <div class="space-y-1 max-h-16 overflow-y-auto overflow-x-visible">
-           ${multiDayEvents.map((event) => this.renderMultiDayEventHTML(event, targetDate)).join("")} 
-          </div>
-
-          <!-- Single-Day Events Section -->
-          <div class="mt-1 space-y-1 max-h-16 overflow-y-auto">
-           ${singleDayEvents.map((event) => this.renderSingleDayEventHTML(event)).join("")} 
-          </div>
-        </div>
-        
-      `;
-    }
-
-    calendarHTML += "</div>";
-    return calendarHTML;
+    this.fillMultiDayEvents(grid, year, month, this.MAX_EVENT_ROWS);
+    this.fillSingleDayEvents(grid, year, month, this.MAX_EVENT_ROWS);
+    return grid;
   }
 
   getEventsForDay(year, month, day) {
-    // Format target date as YYYY-MM-DD
     const targetDate = new Date(year, month, day);
     const targetDateStr = targetDate.toISOString().split("T")[0];
-
     const eventData = this.getEventData();
 
-    return eventData.filter((event) => {
-      const startDateStr = event.startDate.split("T")[0];
-      const endDateStr = event.endDate.split("T")[0];
+    return eventData
+      .filter((event) => {
+        const startDateStr = event.startDate.split("T")[0];
+        const endDateStr = event.endDate.split("T")[0];
+        return startDateStr <= targetDateStr && targetDateStr <= endDateStr;
+      })
+      .sort(this.sortEvents);
+  }
 
-      return startDateStr <= targetDateStr && targetDateStr <= endDateStr;
+  sortEvents(a, b) {
+    if (a.allDay && !b.allDay) return -1;
+    if (!a.allDay && b.allDay) return 1;
+    if (a.allDay && b.allDay) return a.name.localeCompare(b.name);
+    return a.startTime.localeCompare(b.startTime);
+  }
+
+  fillMultiDayEvents(grid, year, month, MAX_ROWS) {
+    const multiDayEvents = this.getEventsForMonth(year, month, true);
+
+    multiDayEvents.forEach((event) => {
+      const eventStart = new Date(event.startDate);
+      const eventEnd = new Date(event.endDate);
+      const targetRow = this.findAvailableRow(
+        grid,
+        year,
+        month,
+        eventStart,
+        eventEnd,
+      );
+
+      if (targetRow !== -1) {
+        for (
+          let day = eventStart.getUTCDate();
+          day <= eventEnd.getUTCDate();
+          day++
+        ) {
+          const gridIndex = this.getGridIndexForDay(grid, year, month, day);
+          if (gridIndex !== -1) {
+            grid[gridIndex].slots[targetRow] = {
+              eventId: event.id,
+              event,
+              isStart: day === eventStart.getUTCDate(),
+              isEnd: day === eventEnd.getUTCDate(),
+            };
+          }
+        }
+      }
     });
   }
 
-  renderSingleDayEventHTML(event) {
-    const timeDisplay = event.allDay
-      ? ""
-      : `<span class="text-xs opacity-75">${event.startTime}</span>`;
+  fillSingleDayEvents(grid, year, month, MAX_ROWS) {
+    const singleDayEvents = this.getEventsForMonth(year, month, false);
 
-    return `
-      <div class="text-xs p-1 bg-blue-100 text-blue-500 rounded truncate cursor-pointer hover:bg-opacity-80" onclick="">${timeDisplay} ${event.name}</div>
-    `;
+    singleDayEvents.forEach((event) => {
+      const eventDate = new Date(event.startDate);
+      const day = eventDate.getUTCDate();
+      const gridIndex = this.getGridIndexForDay(grid, year, month, day);
+
+      if (gridIndex !== -1) {
+        const targetRow = grid[gridIndex].slots.findIndex(
+          (slot) => slot === null,
+        );
+        if (targetRow !== -1) {
+          grid[gridIndex].slots[targetRow] = {
+            eventId: event.id,
+            event,
+            isStart: true,
+            isEnd: true,
+          };
+        }
+      }
+    });
   }
 
-  renderMultiDayEventHTML(event, currentDay) {
-    const currentDate = currentDay;
+  getEventsForMonth(year, month, multiDay = null) {
+    const eventData = this.getEventData();
+    const monthStart = new Date(year, month, 1);
+    const monthEnd = new Date(year, month + 1, 0); // Last day of month
 
-    // Convert to YYYY-MM-DD for comparison
-    const eventStartStr = event.startDate.split("T")[0];
-    const eventEndStr = event.endDate.split("T")[0];
-    const currentDateStr = currentDate.toISOString().split("T")[0];
+    // Convert to date strings for comparison (YYYY-MM-DD)
+    const monthStartStr = monthStart.toISOString().split()[0];
+    const monthEndStr = monthEnd.toISOString().split("T")[0];
 
-    // Determine event positioning and styling
-    let positionClass = "";
-    let text = event.name;
+    return eventData
+      .filter((event) => {
+        // Filter by multiDay option
+        if (multiDay !== null && multiDay !== event.multiDay) return false;
 
-    const timeDisplay = event.allDay
-      ? ""
-      : `<span class="text-xs opacity-75">${event.startTime}</span>`;
+        const eventStartStr = event.startDate.split("T")[0];
+        const eventEndStr = event.endDate.split("T")[0];
+        return eventStartStr <= monthEndStr && eventEndStr >= monthStartStr;
+      })
+      .sort(this.sortEvents);
+  }
 
-    if (currentDateStr === eventStartStr) {
-      // First day of multi-day event
-      positionClass = "rounded-r-none border-r-0";
-      text = `${timeDisplay} ${event.name}`;
-    } else if (currentDateStr === eventEndStr) {
-      // Last day of multi-day event
-      positionClass = "rounded-l-none border-l-0";
-      text = "";
-    } else {
-      // Middle days of multi day event
-      positionClass = "rounded-none border-l-0 border-r-0";
-      text = "";
+  findAvailableRow(grid, year, month, eventStart, eventEnd) {
+    for (let row = 0; row <= this.MAX_EVENT_ROWS; row++) {
+      const canFit = this.canFitInRow(
+        grid,
+        year,
+        month,
+        eventStart,
+        eventEnd,
+        row,
+      );
+      if (canFit) return row;
     }
+    return -1;
+  }
 
-    return `
-      <div class="text-xs p-1 rounded bg-blue-100 text-blue-500 ${positionClass} truncate cursor-pointer hover:bg-opacity-80 min-h-[24px] flex items-center" onclick="" title="${event.name}">${text}</div>
-    `;
+  canFitInRow(grid, year, month, eventStart, eventEnd, row) {
+    for (
+      let day = eventStart.getUTCDate();
+      day <= eventEnd.getUTCDate();
+      day++
+    ) {
+      const gridIndex = this.getGridIndexForDay(grid, year, month, day);
+      if (gridIndex === -1 || grid[gridIndex].slots[row] !== null) {
+        return false;
+      }
+    }
+    return true;
+  }
+
+  getGridIndexForDay(grid, year, month, day) {
+    return grid.findIndex(
+      (cell) =>
+        !cell.isEmpty &&
+        cell.date.getUTCDate() === day &&
+        cell.date.getUTCMonth() === month &&
+        cell.date.getFullYear() === year,
+    );
   }
 
   // -------------------------- Event Management ------------------------
+  handleNewEvent() {
+    const newEvent = this.createEvent();
+    this.addEvent(newEvent);
+  }
+
   createEvent() {
     // Get details from HTML components
     const name = document.getElementById("eventName").value;
@@ -261,23 +372,21 @@ class CalendarManager {
       startTime: allDay ? null : startTime,
       endTime: allDay ? null : endTime,
     };
-
-    this.clearInputFields();
-
     return newEvent;
-  }
-
-  clearInputFields() {}
-
-  handleNewEvent() {
-    const newEvent = this.createEvent();
-    this.addEvent(newEvent);
   }
 
   addEvent(newEvent) {
     const eventData = this.getEventData();
     eventData.push(newEvent);
     this.saveEventData(eventData);
-    this.updateAll();
+    this.renderCalendar();
+  }
+
+  deleteEventData(eventId) {
+    const eventData = this.getEventData().filter(
+      (event) => event.id !== eventId,
+    );
+    this.saveEventData(eventData);
+    this.renderCalendar();
   }
 }

@@ -1,3 +1,5 @@
+import "../components/ModalManager.js";
+
 class App {
   constructor() {
     this.currentPage = "tasks";
@@ -7,6 +9,7 @@ class App {
   }
 
   async init() {
+    ModalManager.init();
     this.bindNavigation();
     this.bindSidebarEvents();
     await this.loadPage("tasks");
@@ -23,54 +26,42 @@ class App {
   }
 
   bindSidebarEvents() {
-    const newTaskButton = document.getElementById("toggleTaskForm");
-    if (newTaskButton) {
-      newTaskButton.addEventListener("click", () => {
-        this.toggleNewTaskForm();
-      });
-    }
+    document.addEventListener("click", (e) => {
+      if (
+        e.target.id === "showTaskModal" ||
+        e.target.closest("#showTaskModal")
+      ) {
+        this.showNewTaskModal();
+      }
 
-    const newEventButton = document.getElementById("toggleEventForm");
-    if (newEventButton) {
-      newEventButton.addEventListener("click", () => {
-        this.toggleNewEventForm();
-      });
-    }
+      if (
+        e.target.id === "showEventModal" ||
+        e.target.closest("#showEventModal")
+      ) {
+        this.showNewEventModal();
+      }
+    });
   }
 
-  toggleNewTaskForm() {
+  showNewTaskModal() {
     if (this.currentPage === "tasks") {
-      const newTaskForm = document.getElementById("newTaskForm");
-      if (newTaskForm) {
-        newTaskForm.classList.toggle("hidden");
-      }
+      ModalManager.show("taskModal");
     } else {
       this.loadPage("tasks").then(() => {
-        // Small delay to ensure form is loaded
         setTimeout(() => {
-          const newTaskForm = document.getElementById("newTaskForm");
-          if (newTaskForm) {
-            newTaskForm.classList.toggle("hidden");
-          }
+          ModalManager.show("taskModal");
         }, 50);
       });
     }
   }
 
-  toggleNewEventForm() {
+  showNewEventModal() {
     if (this.currentPage === "calendar") {
-      const newEventForm = document.getElementById("newEventForm");
-      if (newEventForm) {
-        newEventForm.classList.toggle("hidden");
-      }
+      ModalManager.show("eventModal");
     } else {
       this.loadPage("calendar").then(() => {
-        // Small delay to enure form is loaded
         setTimeout(() => {
-          const newEventForm = document.getElementById("newEventForm");
-          if (newEventForm) {
-            newEventForm.classList.toggle("hidden");
-          }
+          ModalManager.show("eventModal");
         }, 50);
       });
     }
