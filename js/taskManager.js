@@ -24,7 +24,6 @@ class TaskManager {
       Low: "#16A34A", // Green
     };
 
-    this.buttons = document.querySelectorAll("button[data-view]");
     this.views = document.querySelectorAll(".view");
     this.addTaskButton = document.getElementById("addTaskButton");
 
@@ -32,16 +31,17 @@ class TaskManager {
   }
 
   init() {
-    this.bindEvents();
     this.setActiveView("duration-view");
     this.updateAll();
   }
 
   bindEvents() {
-    this.buttons.forEach((button) => {
-      button.addEventListener("click", () => {
-        this.setActiveView(button.dataset.view);
-      });
+    document.addEventListener("click", (event) => {
+      const viewButton = event.target.closest("button[data-view]");
+      if (viewButton) {
+        console.log(`DIFF METHOD ${viewButton.dataset.view} clicked`);
+        this.setActiveView(viewButton.dataset.view);
+      }
     });
 
     this.addTaskButton.addEventListener("click", () => {
@@ -215,7 +215,8 @@ class TaskManager {
   // -------------------------- View Management --------------------------
   setActiveView(viewOption) {
     // Update button active style
-    this.buttons.forEach((button) => {
+    const switchViewButtons = document.querySelectorAll("button[data-view]");
+    switchViewButtons.forEach((button) => {
       const isActive = viewOption === button.dataset.view;
       button.classList.toggle("border-2", isActive);
       button.classList.toggle("border-blue-500", isActive);
@@ -229,7 +230,8 @@ class TaskManager {
     });
 
     // Show selected view
-    this.views.forEach((view) => {
+    const views = document.querySelectorAll(".view");
+    this.views = views.forEach((view) => {
       view.classList.toggle("hidden", view.id !== viewOption);
     });
 

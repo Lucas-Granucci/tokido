@@ -6,8 +6,7 @@ class CalendarManager {
   }
 
   init() {
-    this.bindEvents();
-    this.renderCalendar();
+    this.updateAll();
   }
 
   // -------------------------- Event Binding --------------------------
@@ -53,15 +52,19 @@ class CalendarManager {
     });
   }
 
+  updateAll() {
+    this.renderCalendar();
+  }
+
   // -------------------------- Calendar Navigation --------------------------
   previousMonth() {
     this.currentDate.setMonth(this.currentDate.getMonth() - 1);
-    this.renderCalendar();
+    this.updateAll();
   }
 
   nextMonth() {
     this.currentDate.setMonth(this.currentDate.getMonth() + 1);
-    this.renderCalendar();
+    this.updateAll();
   }
 
   // -------------------------- UI Controls --------------------------
@@ -407,7 +410,7 @@ class CalendarManager {
     const eventData = this.getEventData();
     eventData.push(newEvent);
     this.saveEventData(eventData);
-    this.renderCalendar();
+    this.updateAll();
   }
 
   deleteEventData(eventId) {
@@ -415,7 +418,7 @@ class CalendarManager {
       (event) => event.id !== eventId,
     );
     this.saveEventData(eventData);
-    this.renderCalendar();
+    this.updateAll();
   }
 
   deleteCurrentlyEditingEvent() {
@@ -493,6 +496,6 @@ class CalendarManager {
     eventData[eventIndex] = updatedEvent;
     this.saveEventData(eventData);
     ModalManager.hide("editEventModal");
-    this.renderCalendar();
+    this.updateAll();
   }
 }

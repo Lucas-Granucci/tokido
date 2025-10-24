@@ -3,6 +3,9 @@ class App {
     this.currentPage = "tasks";
     this.taskManager = null;
     this.calendarManager = null;
+
+    this.taskManagerEventsBound = false;
+    this.calendarManagerEventsBound = false;
     this.init();
   }
 
@@ -103,9 +106,17 @@ class App {
     switch (pageName) {
       case "tasks":
         this.taskManager = new TaskManager();
+        if (!this.taskManagerEventsBound) {
+          this.taskManager.bindEvents();
+          this.taskManagerEventsBound = true;
+        }
         break;
       case "calendar":
         this.calendarManager = new CalendarManager();
+        if (!this.calendarManagerEventsBound) {
+          this.calendarManager.bindEvents();
+          this.calendarManagerEventsBound = true;
+        }
         break;
       case "settings":
         this.initializeSettings();
