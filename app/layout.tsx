@@ -26,7 +26,7 @@ export default async function RootLayout({
       <body className="flex h-screen bg-muted/30 text-foreground">
         <SidebarProvider>
           <AppSidebar user={user} />
-          <main className="flex-1 overflow-y-auto p-6">{children}</main>
+          <main className="flex-1 overflow-y-auto">{children}</main>
           <Toaster />
         </SidebarProvider>
       </body>

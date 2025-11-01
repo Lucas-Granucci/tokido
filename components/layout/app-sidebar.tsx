@@ -1,20 +1,26 @@
 "use client";
 
-import { createClient } from "@/lib/supabase/client";
+import Link from "next/link";
 import { User } from "@supabase/supabase-js";
-import { useEffect, useState } from "react";
-import { Calendar, Home, CheckCircle, Settings, Layers } from "lucide-react";
+import {
+  Calendar,
+  Home,
+  CheckCircle,
+  Settings,
+  Layers,
+  SidebarIcon,
+} from "lucide-react";
 
 import {
   Sidebar,
   SidebarContent,
   SidebarFooter,
   SidebarGroup,
-  SidebarGroupContent,
   SidebarHeader,
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
+  SidebarRail,
   SidebarTrigger,
   useSidebar,
 } from "@/components/ui/sidebar";
@@ -29,39 +35,56 @@ const navItems = [
 ];
 
 export function AppSidebar({ user }: { user: User | null }) {
+  const { open, toggleSidebar } = useSidebar();
+
   return (
     <Sidebar collapsible="icon">
       <SidebarHeader className="border-b">
         <SidebarMenu>
-          <SidebarMenuItem>
-            <SidebarMenuButton asChild>
-              <a href="#">
-                <Layers className="!size-5" />
-                <span className="text-base font-semibold">Tokdio</span>
-              </a>
-            </SidebarMenuButton>
-          </SidebarMenuItem>
+          <SidebarMenuButton className="group/icon" size="lg" asChild>
+            <div>
+              <button
+                onClick={toggleSidebar}
+                className="flex aspect-square size-8 items-center justify-center rounded-lg"
+              >
+                {open ? (
+                  <Layers className="size-5" />
+                ) : (
+                  <>
+                    <Layers className="size-5 transition-opacity group-hover/icon:opacity-0" />
+                    <SidebarIcon className="absolute size-5 opacity-0 transition-opacity group-hover/icon:opacity-100" />
+                  </>
+                )}
+              </button>
+
+              <span className="text-xl font-semibold">Tokido</span>
+              <SidebarTrigger className="ml-auto" />
+            </div>
+          </SidebarMenuButton>
         </SidebarMenu>
       </SidebarHeader>
 
-      <SidebarContent className="p-2">
-        <SidebarMenu>
-          {navItems.map((item) => (
-            <SidebarMenuItem key={item.title}>
-              <SidebarMenuButton asChild>
-                <a href={item.url}>
-                  <item.icon />
-                  <span>{item.title}</span>
-                </a>
-              </SidebarMenuButton>
-            </SidebarMenuItem>
-          ))}
-        </SidebarMenu>
+      <SidebarContent>
+        <SidebarGroup>
+          <SidebarMenu>
+            {navItems.map((item) => (
+              <SidebarMenuItem key={item.title}>
+                <SidebarMenuButton asChild>
+                  <Link href={item.url}>
+                    <item.icon />
+                    <span>{item.title}</span>
+                  </Link>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+            ))}
+          </SidebarMenu>
+        </SidebarGroup>
       </SidebarContent>
 
-      <SidebarFooter className="p-3 border-t">
+      <SidebarFooter className="border-t">
         <UserButton user={user} />
       </SidebarFooter>
+      <SidebarRail />
     </Sidebar>
   );
 }
