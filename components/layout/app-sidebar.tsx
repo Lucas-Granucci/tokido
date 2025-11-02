@@ -20,7 +20,6 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
-  SidebarRail,
   SidebarTrigger,
   useSidebar,
 } from "@/components/ui/sidebar";
@@ -52,13 +51,13 @@ export function AppSidebar({ user }: { user: User | null }) {
                 ) : (
                   <>
                     <Layers className="size-5 transition-opacity group-hover/icon:opacity-0" />
-                    <SidebarIcon className="absolute size-5 opacity-0 transition-opacity group-hover/icon:opacity-100" />
+                    <SidebarIcon className="absolute size-5 hover:cursor-e-resize opacity-0 transition-opacity group-hover/icon:opacity-100" />
                   </>
                 )}
               </button>
 
               <span className="text-xl font-semibold">Tokido</span>
-              <SidebarTrigger className="ml-auto" />
+              <SidebarTrigger className="ml-auto hover:cursor-w-resize" />
             </div>
           </SidebarMenuButton>
         </SidebarMenu>
@@ -84,7 +83,6 @@ export function AppSidebar({ user }: { user: User | null }) {
       <SidebarFooter className="border-t">
         <UserButton user={user} />
       </SidebarFooter>
-      <SidebarRail />
     </Sidebar>
   );
 }

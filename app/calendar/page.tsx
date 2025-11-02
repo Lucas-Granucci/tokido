@@ -1,14 +1,10 @@
-import { createClient } from "@/lib/supabase/server";
+import { getCurrentUser } from "@/lib/user-server";
 import { redirect } from "next/navigation";
 
 export default async function CalendarPage() {
-  const supabase = await createClient();
-  const {
-    data: { user },
-    error,
-  } = await supabase.auth.getUser();
+  const { user, error } = await getCurrentUser();
 
-  if (!user || error) {
+  if (!user) {
     redirect("/auth");
   }
 

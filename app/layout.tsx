@@ -3,6 +3,7 @@ import { createClient } from "@/lib/supabase/server";
 import { AppSidebar } from "@/components/layout/app-sidebar";
 import { SidebarProvider } from "@/components/ui/sidebar";
 import { Toaster } from "@/components/ui/sonner";
+import { getCurrentUser } from "@/lib/user-server";
 
 export const metadata = {
   title: "Tokido",
@@ -16,17 +17,14 @@ export default async function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  const { user } = await getCurrentUser();
 
   return (
     <html lang="en">
       <body className="flex h-screen bg-muted/30 text-foreground">
         <SidebarProvider>
           <AppSidebar user={user} />
-          <main className="flex-1 overflow-y-auto">{children}</main>
+          <main className="flex-1 overflow-y-auto p-6">{children}</main>
           <Toaster />
         </SidebarProvider>
       </body>

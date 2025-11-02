@@ -1,21 +1,13 @@
-import { createClient } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
+import { getCurrentUser } from "@/lib/user-server";
+import TasksClient from "./TasksClient";
 
 export default async function TasksPage() {
-  const supabase = await createClient();
-  const {
-    data: { user },
-    error,
-  } = await supabase.auth.getUser();
+  const { user } = await getCurrentUser();
 
-  if (!user || error) {
+  if (!user) {
     redirect("/auth");
   }
 
-  return (
-    <div>
-      <h1 className="text-2xl font-bold mb-4">Tasks</h1>
-      <p>This is the tasks page</p>
-    </div>
-  );
+  return <TasksClient initialUser={user} />;
 }
