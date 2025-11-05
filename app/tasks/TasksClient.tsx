@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { User } from "@supabase/supabase-js";
-import type { Task, CreateTaskData } from "@/lib/tasks/types";
+import type { Task } from "@/lib/tasks/types";
 import { tasksClient } from "@/lib/tasks/client";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Calendar, Clock, Flag, Folder, Plus } from "lucide-react";

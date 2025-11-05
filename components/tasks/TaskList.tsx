@@ -1,13 +1,5 @@
 import { TaskGroup } from "./types/view-types";
-import {
-  Card,
-  CardHeader,
-  CardContent,
-  CardTitle,
-  CardDescription,
-  CardAction,
-  CardFooter,
-} from "../ui/card";
+import { Card, CardHeader, CardContent, CardTitle } from "../ui/card";
 import { Plus } from "lucide-react";
 import { Button } from "../ui/button";
 import TaskCard from "./TaskCard";

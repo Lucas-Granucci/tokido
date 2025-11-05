@@ -26,7 +26,6 @@ import {
 } from "@/components/ui/sidebar";
 
 import { UserButton } from "@/components/layout/user-button";
-import { Button } from "../ui/button";
 import { useState } from "react";
 import { CreateDialog } from "./create-dialog";
 
