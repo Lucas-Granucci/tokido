@@ -1,6 +1,7 @@
 import { Dialog, DialogContent, DialogTitle } from "../ui/dialog";
 import { TaskForm } from "../forms/task-form";
 import { toast } from "sonner";
+import { useTasks } from "@/contexts/tasks-context";
 
 interface CreateDialogProps {
   open: boolean;
@@ -8,9 +9,12 @@ interface CreateDialogProps {
 }
 
 export function CreateDialog({ open, onOpenChange }: CreateDialogProps) {
-  const handleSuccess = () => {
+  const { refreshTasks } = useTasks();
+
+  const handleSuccess = async () => {
     onOpenChange(false);
-    // toast("Task created successfully");
+    toast("Task created successfully");
+    await refreshTasks();
   };
 
   return (

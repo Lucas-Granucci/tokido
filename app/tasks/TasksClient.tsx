@@ -1,14 +1,12 @@
 "use client";
 
-import { useState, useEffect } from "react";
 import { User } from "@supabase/supabase-js";
-import type { Task } from "@/lib/tasks/types";
-import { tasksClient } from "@/lib/tasks/client";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Calendar, Clock, Flag, Folder, Plus } from "lucide-react";
 import { TaskGrid } from "@/components/tasks/TaskGrid";
 import { ViewType } from "@/components/tasks/types/view-types";
 import { Button } from "@/components/ui/button";
+import { useTasks } from "@/contexts/tasks-context";
 
 interface Props {
   initialUser: User;
@@ -21,8 +19,7 @@ interface TaskCategory {
 }
 
 export default function TasksClient({ initialUser }: Props) {
-  const [tasks, setTasks] = useState<Task[]>([]);
-  const [loading, setLoading] = useState(true);
+  const { tasks, loading } = useTasks();
 
   const TaskCategories: TaskCategory[] = [
     // { value: "dueDate", title: "Due Date", icon: Calendar },
@@ -30,21 +27,6 @@ export default function TasksClient({ initialUser }: Props) {
     { value: "priority", title: "Priority", icon: Flag },
     { value: "category", title: "Category", icon: Folder },
   ];
-
-  const loadTasks = async () => {
-    try {
-      const taskData = await tasksClient.getTasks();
-      setTasks(taskData);
-    } catch (error) {
-      console.error("Error loading tasks:", error);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    loadTasks();
-  }, []);
 
   if (loading) {
     return <div>Loading tasks...</div>;
@@ -76,12 +58,12 @@ export default function TasksClient({ initialUser }: Props) {
       </Tabs>
 
       {/* FAB that sticks to content */}
-      <div className="fixed bottom-8 right-8">
+      {/* <div className="fixed bottom-8 right-8">
         <Button className="h-12 w-12 rounded-full shadow-lg gap-0" size="icon">
           <Plus className="h-6 w-6" />
           <span className="sr-only">New Task</span>
         </Button>
-      </div>
+      </div> */}
     </div>
   );
 }

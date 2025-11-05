@@ -41,4 +41,18 @@ export const tasksClient = {
     if (error) throw error;
     return data;
   },
+
+  // delete task by id
+  async deleteTask(taskId: string): Promise<void> {
+    const { user } = await getCurrentUserClient();
+    if (!user) throw new Error("Not authenticated");
+
+    const { data, error } = await supabase
+      .from("tasks")
+      .delete()
+      .eq("id", taskId)
+      .eq("user_id", user.id);
+
+    if (error) throw error;
+  },
 };

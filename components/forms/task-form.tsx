@@ -86,7 +86,7 @@ export function TaskForm({ onSubmitSuccess, onCancel }: TaskFormProps) {
           <FieldLabel htmlFor="task-name">Task Name</FieldLabel>
           <Input
             id="task-name"
-            placeholder="Evil Rabbit"
+            placeholder="Read a book"
             required
             value={formData.name}
             onChange={(e) =>

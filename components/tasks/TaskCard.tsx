@@ -8,6 +8,7 @@ import {
   getDurationColor,
   getCategoryColor,
 } from "./utils/config-utils";
+import { useTasks } from "@/contexts/tasks-context";
 
 interface TaskCardProps {
   task: Task;
@@ -18,12 +19,18 @@ export default function TaskCard({ task }: TaskCardProps) {
   const categoryColor = getCategoryColor(task.category);
   const durationColor = getDurationColor(task.duration);
 
+  const { deleteTask } = useTasks();
+
   return (
     <Card className="p-1 hover:shadow-md transition-shadow duration-200">
       <CardContent className="pl-2 pr-0">
         <div className="flex flex-row items-center justify-between">
           <span className="text-sm">{task.name}</span>
-          <Button variant="ghost" size="icon-sm">
+          <Button
+            variant="ghost"
+            size="icon-sm"
+            onClick={() => deleteTask(task.id)}
+          >
             <X />
           </Button>
         </div>
