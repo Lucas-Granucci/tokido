@@ -6,17 +6,17 @@ export const viewConfigs = {
     high: {
       label: "High",
       color: "#DC2626",
-      filter: (task: Task) => task.priority === "high",
+      filter: (task: Task) => task.priority === "High",
     },
     medium: {
       label: "Medium",
       color: "#F59E0B",
-      filter: (task: Task) => task.priority === "medium",
+      filter: (task: Task) => task.priority === "Medium",
     },
     low: {
       label: "Low",
       color: "#16A34A",
-      filter: (task: Task) => task.priority === "low",
+      filter: (task: Task) => task.priority === "Low",
     },
   } as ViewConfig,
 

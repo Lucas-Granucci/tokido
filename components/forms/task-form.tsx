@@ -14,7 +14,8 @@ import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
 import { ChevronDownIcon } from "lucide-react";
 import { Calendar } from "../ui/calendar";
 import { tasksClient } from "@/lib/tasks/client";
-import { PriorityType, TaskFormData } from "@/lib/tasks/types";
+import { TaskFormData } from "@/lib/tasks/types";
+import { toast } from "sonner";
 
 interface TaskFormProps {
   onSubmitSuccess: () => void;
@@ -30,23 +31,30 @@ export function TaskForm({ onSubmitSuccess, onCancel }: TaskFormProps) {
     duration: 0,
     dueDate: null,
   });
+  const [hours, setHours] = useState(0);
+  const [minutes, setMinutes] = useState(0);
   const [loading, setLoading] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    if (!formData.name || !formData.category || !formData.priority) {
+      toast.error("Please fill in all required fields");
+      return;
+    }
+
     setLoading(true);
 
     try {
-      if (!formData.name || !formData.category || !formData.priority) {
-        alert("Please fill in all required fields");
-        return;
-      }
+      const totalMinutes = hours * 60 + minutes;
+
+      setLoading(true);
 
       await tasksClient.createTask({
         name: formData.name,
         category: formData.category,
         priority: formData.priority,
-        duration: formData.duration,
+        duration: totalMinutes,
         dueDate: formData.dueDate,
       });
 
@@ -58,9 +66,13 @@ export function TaskForm({ onSubmitSuccess, onCancel }: TaskFormProps) {
         duration: 0,
         dueDate: null,
       });
+      setHours(0);
+      setMinutes(0);
+
+      onSubmitSuccess();
     } catch (error) {
       console.error("Error creating task:", error);
-      alert("Failed to create task: " + error);
+      toast.error("Failed to create task: " + error);
     } finally {
       setLoading(false);
     }
@@ -112,7 +124,7 @@ export function TaskForm({ onSubmitSuccess, onCancel }: TaskFormProps) {
             <FieldLabel htmlFor="priority-select">Priority</FieldLabel>
             <Select
               value={formData.priority}
-              onValueChange={(value: PriorityType) =>
+              onValueChange={(value) =>
                 setFormData((prev) => ({ ...prev, priority: value }))
               }
             >
@@ -138,18 +150,22 @@ export function TaskForm({ onSubmitSuccess, onCancel }: TaskFormProps) {
                   type="number"
                   min="0"
                   placeholder="0"
-                  value={formData.duration}
-                  onChange={(e) =>
-                    setFormData((prev) => ({
-                      ...prev,
-                      duration: parseInt(e.target.value) || 0,
-                    }))
-                  }
+                  value={hours}
+                  onChange={(e) => setHours(parseInt(e.target.value) || 0)}
                 />
                 <span className="text-xs text-muted-foreground">hours</span>
               </div>
               <div className="flex-1">
-                <Input type="number" min="0" max="59" placeholder="30" />
+                <Input
+                  type="number"
+                  min="0"
+                  placeholder="0"
+                  value={minutes}
+                  onChange={(e) => {
+                    const value = parseInt(e.target.value) || 0;
+                    setMinutes(Math.min(value, 59));
+                  }}
+                />
                 <span className="text-xs text-muted-foreground">minutes</span>
               </div>
             </div>
@@ -196,7 +212,7 @@ export function TaskForm({ onSubmitSuccess, onCancel }: TaskFormProps) {
           <Button
             type="submit"
             className="cursor-pointer"
-            onClick={onSubmitSuccess}
+            onClick={handleSubmit}
             disabled={loading}
           >
             {loading ? "Creating..." : "Submit"}

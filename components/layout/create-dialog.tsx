@@ -10,7 +10,7 @@ interface CreateDialogProps {
 export function CreateDialog({ open, onOpenChange }: CreateDialogProps) {
   const handleSuccess = () => {
     onOpenChange(false);
-    toast("Task created successfully");
+    // toast("Task created successfully");
   };
 
   return (

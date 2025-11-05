@@ -1,9 +1,10 @@
 import { viewConfigs } from "../types/view-config";
-import { Task } from "@/lib/tasks/types";
 
 export function getPriorityColor(priority: string): string {
-  return viewConfigs.priority[priority as keyof typeof viewConfigs.priority]
-    ?.color;
+  const config = Object.values(viewConfigs.priority).find(
+    (item) => item.label === priority
+  );
+  return config?.color || "#6B7280";
 }
 
 export function getCategoryColor(category: string): string {
