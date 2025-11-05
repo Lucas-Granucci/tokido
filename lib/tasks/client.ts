@@ -1,6 +1,6 @@
 import { supabase } from "../supabase/client";
 import { getCurrentUserClient } from "@/lib/user-client";
-import type { Task, CreateTaskData } from "./types";
+import type { Task, TaskFormData } from "./types";
 
 export const tasksClient = {
   // get all tasks for current user
@@ -19,7 +19,7 @@ export const tasksClient = {
   },
 
   // create new task
-  async createTask(taskData: CreateTaskData): Promise<Task> {
+  async createTask(taskData: TaskFormData): Promise<Task> {
     const { user } = await getCurrentUserClient();
     if (!user) throw new Error("Not authenticated");
 

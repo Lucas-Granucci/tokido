@@ -1,19 +1,21 @@
+export type PriorityType = "" | "low" | "medium" | "high";
+
 export interface Task {
   id: string;
   user_id: string;
   name: string;
   category: string;
-  priority: "low" | "medium" | "high";
-  duration: string;
-  due_date: string | null;
+  priority: PriorityType;
+  duration: number;
+  due_date: string;
   created_at: string;
   updated_at: string;
 }
 
-export interface CreateTaskData {
+export interface TaskFormData {
   name: string;
   category: string;
-  priority: "low" | "medium" | "high";
-  duration: string;
-  dueDate: string;
+  priority: PriorityType;
+  duration: number;
+  dueDate: Date | null;
 }

@@ -1,5 +1,4 @@
 import "./globals.css";
-import { createClient } from "@/lib/supabase/server";
 import { AppSidebar } from "@/components/layout/app-sidebar";
 import { SidebarProvider } from "@/components/ui/sidebar";
 import { Toaster } from "@/components/ui/sonner";
@@ -12,11 +11,11 @@ export const metadata = {
   },
 };
 
-export default async function RootLayout({
-  children,
-}: {
+interface RootLayoutProps {
   children: React.ReactNode;
-}) {
+}
+
+export default async function RootLayout({ children }: RootLayoutProps) {
   const { user } = await getCurrentUser();
 
   return (
