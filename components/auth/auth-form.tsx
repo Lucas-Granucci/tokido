@@ -20,34 +20,66 @@ export function AuthForm() {
 
     // Form validation
     if (!email || !password) {
-      toast("Please enter your email and password.");
+      toast.error("Missing Information", {
+        description: "Please enter both email and password to continue",
+      });
       return;
     }
 
     if (mode === "signup" && (!firstName || !lastInitial)) {
-      toast("Please enter your first name and last initial.");
+      toast.error("Complete Your Profile", {
+        description: "Please enter your first name and last initial",
+      });
       return;
     }
 
     setLoading(true);
 
-    if (mode === "signup") {
-      const result = await signUp({ email, password, firstName, lastInitial });
-
-      if (result.error) {
-        toast(result.error);
+    try {
+      if (mode === "signup") {
+        const result = await signUp({
+          email,
+          password,
+          firstName,
+          lastInitial,
+        });
+        console.log(result);
+        if (result.error) {
+          toast.error("Sign Up Failed", {
+            description: result.error,
+            duration: 5000,
+          });
+        } else {
+          toast.success("Welcome Aboard!", {
+            description: `Account created successfully for ${firstName}. Check your email to verify your account.`,
+            duration: 6000,
+          });
+        }
       } else {
-        toast(result.message);
-      }
-    } else {
-      const result = await signIn({ email, password });
+        const result = await signIn({ email, password });
 
-      if (result?.error) {
-        toast(result.error);
+        if (result?.error) {
+          if (result?.error) {
+            toast.error("Sign In Failed", {
+              description: result.error,
+              duration: 5000,
+            });
+          } else {
+            toast.success("Welcome Back!", {
+              description: `Successfully signed in with ${email}`,
+              duration: 4000,
+            });
+          }
+        }
       }
+    } catch (error) {
+      toast.error("Something Went Wrong", {
+        description: "Please try again in a moment",
+        duration: 5000,
+      });
+    } finally {
+      setLoading(false);
     }
-
-    setLoading(false);
   }
 
   return (
@@ -92,13 +124,17 @@ export function AuthForm() {
             value={password}
             onChange={(e) => setPassword(e.target.value)}
           />
-          <Button className="w-full" type="submit" disabled={loading}>
+          <Button
+            className="w-full cursor-pointer"
+            type="submit"
+            disabled={loading}
+          >
             {loading ? "Loading..." : mode === "signin" ? "Sign In" : "Sign Up"}
           </Button>
         </form>
         <Button
           variant="link"
-          className="mt-2 w-full text-sm"
+          className="mt-2 w-full text-sm cursor-pointer"
           type="button"
           onClick={() => setMode(mode === "signin" ? "signup" : "signin")}
         >

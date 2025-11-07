@@ -3,12 +3,14 @@ import { Plus } from "lucide-react";
 import { Button } from "../ui/button";
 import { TaskGroup } from "./utils/view-types";
 import { Card, CardHeader, CardContent, CardTitle } from "../ui/card";
+import { useCreateDialog } from "@/contexts/create-dialog-context";
 
 interface TaskListProps {
   group: TaskGroup;
 }
 
 export default function TaskList({ group }: TaskListProps) {
+  const { openCreateDialog } = useCreateDialog();
   return (
     <Card>
       <CardHeader className="flex flex-row items-center justify-between">
@@ -19,7 +21,12 @@ export default function TaskList({ group }: TaskListProps) {
           </p>
         </div>
 
-        <Button variant="outline" size="sm">
+        <Button
+          className="cursor-pointer"
+          variant="outline"
+          size="sm"
+          onClick={openCreateDialog}
+        >
           <Plus />
         </Button>
       </CardHeader>

@@ -5,6 +5,7 @@ import { TaskForm } from "../forms/task-form";
 import { useTasks } from "@/contexts/tasks-context";
 import { Dialog, DialogContent, DialogTitle } from "../ui/dialog";
 import { useCreateDialog } from "@/contexts/create-dialog-context";
+import { Task } from "@/lib/tasks/types";
 
 export function CreateDialog() {
   const { refreshTasks } = useTasks();
@@ -13,7 +14,12 @@ export function CreateDialog() {
 
   const handleSuccess = async () => {
     closeCreateDialog();
-    toast("Task created successfully");
+
+    toast.success("Task Created!", {
+      description: "New task has been added to your list",
+      duration: 3000,
+    });
+
     await refreshTasks();
   };
 
