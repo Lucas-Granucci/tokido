@@ -1,7 +1,6 @@
-import { signOut } from "@/lib/auth";
 import { User } from "@supabase/supabase-js";
-import { Button } from "../ui/button";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { ChevronsUpDown, LogOut, User2 } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -10,28 +9,21 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "../ui/dropdown-menu";
-import { ChevronsUpDown, LogOut, User2 } from "lucide-react";
 import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
   useSidebar,
 } from "../ui/sidebar";
+import { useUser } from "@/contexts/user-context";
 
-export function UserButton({ user }: { user: User | null }) {
+export function UserButton() {
   const { isMobile } = useSidebar();
+  const { user, signOut } = useUser();
 
   const handleSignOut = async () => {
     await signOut();
   };
-
-  if (!user) {
-    return (
-      <Button asChild className="w-full" variant="outline">
-        <a href="/auth">Sign In</a>
-      </Button>
-    );
-  }
 
   return (
     <SidebarMenu>
@@ -44,14 +36,14 @@ export function UserButton({ user }: { user: User | null }) {
             >
               <Avatar className="h-8 w-8 rounded-lg">
                 <AvatarFallback className="rounded-lg bg-gray-300">
-                  {user.user_metadata.display_name?.charAt(0).toUpperCase()}
+                  {user?.user_metadata.display_name?.charAt(0).toUpperCase()}
                 </AvatarFallback>
               </Avatar>
               <div className="grid flex-1 text-left text-sm leading-tight">
                 <span className="truncate font-medium">
-                  {user.user_metadata.display_name}
+                  {user?.user_metadata.display_name}
                 </span>
-                <span className="truncate text-xs">{user.email}</span>
+                <span className="truncate text-xs">{user?.email}</span>
               </div>
               <ChevronsUpDown className="ml-auto size-4" />
             </SidebarMenuButton>
@@ -67,14 +59,14 @@ export function UserButton({ user }: { user: User | null }) {
               <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
                 <Avatar className="h-8 w-8 rounded-lg">
                   <AvatarFallback className="rounded-lg bg-gray-300">
-                    {user.user_metadata.display_name?.charAt(0).toUpperCase()}
+                    {user?.user_metadata.display_name?.charAt(0).toUpperCase()}
                   </AvatarFallback>
                 </Avatar>
                 <div className="grid flex-1 text-left text-sm leading-tight">
                   <span className="truncate font-medium">
-                    {user.user_metadata.display_name}
+                    {user?.user_metadata.display_name}
                   </span>
-                  <span className="truncate text-xs">{user.email}</span>
+                  <span className="truncate text-xs">{user?.email}</span>
                 </div>
               </div>
             </DropdownMenuLabel>

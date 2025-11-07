@@ -8,12 +8,12 @@ import {
   SelectTrigger,
   SelectValue,
 } from "../ui/select";
-import { viewConfigs } from "../tasks/types/view-config";
+import { viewConfigs } from "../tasks/utils/view-config";
 import { useState } from "react";
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
 import { ChevronDownIcon } from "lucide-react";
 import { Calendar } from "../ui/calendar";
-import { tasksClient } from "@/lib/tasks/client";
+import { tasksClient } from "@/lib/tasks/tasksClient";
 import { TaskFormData } from "@/lib/tasks/types";
 import { toast } from "sonner";
 

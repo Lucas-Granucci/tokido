@@ -4,10 +4,6 @@ import { redirect } from "next/navigation";
 export default async function CalendarPage() {
   const { user, error } = await getCurrentUser();
 
-  if (!user) {
-    redirect("/auth");
-  }
-
   return (
     <div>
       <h1 className="text-2xl font-bold mb-4">Calendar</h1>

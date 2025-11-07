@@ -2,7 +2,7 @@
 
 import React, { createContext, useContext, useEffect, useState } from "react";
 import { Task } from "@/lib/tasks/types";
-import { tasksClient } from "@/lib/tasks/client";
+import { tasksClient } from "@/lib/tasks/tasksClient";
 
 interface TaskContextType {
   tasks: Task[];

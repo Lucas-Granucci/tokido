@@ -1,16 +1,10 @@
 "use client";
 
-import { User } from "@supabase/supabase-js";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Calendar, Clock, Flag, Folder, Plus } from "lucide-react";
 import { TaskGrid } from "@/components/tasks/TaskGrid";
-import { ViewType } from "@/components/tasks/types/view-types";
-import { Button } from "@/components/ui/button";
+import { ViewType } from "@/components/tasks/utils/view-types";
 import { useTasks } from "@/contexts/tasks-context";
-
-interface Props {
-  initialUser: User;
-}
 
 interface TaskCategory {
   value: ViewType;
@@ -18,7 +12,7 @@ interface TaskCategory {
   icon: React.ElementType;
 }
 
-export default function TasksClient({ initialUser }: Props) {
+export default function TasksPageClient() {
   const { tasks, loading } = useTasks();
 
   const TaskCategories: TaskCategory[] = [

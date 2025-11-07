@@ -28,6 +28,7 @@ import {
 import { UserButton } from "@/components/layout/user-button";
 import { useState } from "react";
 import { CreateDialog } from "./create-dialog";
+import { useUser } from "@/contexts/user-context";
 
 const navItems = [
   { title: "Overview", url: "/overview", icon: Home },
@@ -40,9 +41,10 @@ interface AppSidebarProps {
   user: User | null;
 }
 
-export function AppSidebar({ user }: AppSidebarProps) {
+export function AppSidebar() {
   const { open, toggleSidebar } = useSidebar();
   const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
+  const { user } = useUser();
 
   return (
     <>
@@ -111,7 +113,7 @@ export function AppSidebar({ user }: AppSidebarProps) {
         </SidebarContent>
 
         <SidebarFooter className="border-t">
-          <UserButton user={user} />
+          <UserButton />
         </SidebarFooter>
       </Sidebar>
       <CreateDialog

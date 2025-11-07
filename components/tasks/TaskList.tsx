@@ -1,4 +1,4 @@
-import { TaskGroup } from "./types/view-types";
+import { TaskGroup } from "./utils/view-types";
 import { Card, CardHeader, CardContent, CardTitle } from "../ui/card";
 import { Plus } from "lucide-react";
 import { Button } from "../ui/button";

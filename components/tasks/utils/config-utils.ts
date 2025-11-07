@@ -1,4 +1,4 @@
-import { viewConfigs } from "../types/view-config";
+import { viewConfigs } from "./view-config";
 
 export function getPriorityColor(priority: string): string {
   const config = Object.values(viewConfigs.priority).find(

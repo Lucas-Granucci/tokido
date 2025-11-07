@@ -1,6 +1,6 @@
 import { Task } from "@/lib/tasks/types";
-import { viewConfigs } from "./types/view-config";
-import { TaskGroup, ViewType } from "./types/view-types";
+import { viewConfigs } from "./utils/view-config";
+import { TaskGroup, ViewType } from "./utils/view-types";
 import TaskList from "./TaskList";
 
 interface TaskGridProps {
