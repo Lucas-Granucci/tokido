@@ -6,6 +6,8 @@ import { getCurrentUser } from "@/lib/user-server";
 import { TasksProvider } from "@/contexts/tasks-context";
 import { UserProvider } from "@/contexts/user-context";
 import { AuthGuard } from "@/components/auth/auth-guard";
+import { CreateDialog } from "@/components/layout/create-dialog";
+import { CreateDialogProvider } from "@/contexts/create-dialog-context";
 
 export const metadata = {
   title: "Tokido",
@@ -28,8 +30,11 @@ export default async function RootLayout({ children }: RootLayoutProps) {
           <AuthGuard>
             <SidebarProvider>
               <TasksProvider>
-                <AppSidebar />
-                <main className="flex-1 overflow-y-auto p-6">{children}</main>
+                <CreateDialogProvider>
+                  <AppSidebar />
+                  <main className="flex-1 overflow-y-auto p-6">{children}</main>
+                  <CreateDialog />
+                </CreateDialogProvider>
               </TasksProvider>
             </SidebarProvider>
           </AuthGuard>

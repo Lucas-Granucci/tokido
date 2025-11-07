@@ -1,29 +1,29 @@
+"use client";
+
 import { toast } from "sonner";
 import { TaskForm } from "../forms/task-form";
 import { useTasks } from "@/contexts/tasks-context";
 import { Dialog, DialogContent, DialogTitle } from "../ui/dialog";
+import { useCreateDialog } from "@/contexts/create-dialog-context";
 
-interface CreateDialogProps {
-  open: boolean;
-  onOpenChange: (open: boolean) => void;
-}
-
-export function CreateDialog({ open, onOpenChange }: CreateDialogProps) {
+export function CreateDialog() {
   const { refreshTasks } = useTasks();
+  const { isCreateDialogOpen, closeCreateDialog, setIsCreateDialogOpen } =
+    useCreateDialog();
 
   const handleSuccess = async () => {
-    onOpenChange(false);
+    closeCreateDialog();
     toast("Task created successfully");
     await refreshTasks();
   };
 
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
+    <Dialog open={isCreateDialogOpen} onOpenChange={setIsCreateDialogOpen}>
       <DialogContent>
         <DialogTitle>Create Task</DialogTitle>
         <TaskForm
           onSubmitSuccess={handleSuccess}
-          onCancel={() => onOpenChange(false)}
+          onCancel={closeCreateDialog}
         />
       </DialogContent>
     </Dialog>
