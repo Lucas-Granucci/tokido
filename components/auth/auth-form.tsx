@@ -129,7 +129,7 @@ export function AuthForm() {
             type="submit"
             disabled={loading}
           >
-            {loading ? "Loading..." : mode === "signin" ? "Sign In" : "Sign Up"}
+            {loading ? "Loading..." : mode === "signin" ? "Sign In" : "Ani Up"}
           </Button>
         </form>
         <Button
