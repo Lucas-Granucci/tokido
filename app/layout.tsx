@@ -28,10 +28,10 @@ export default async function RootLayout({ children }: RootLayoutProps) {
             <TasksProvider>
               <AppSidebar />
               <main className="flex-1 overflow-y-auto p-6">{children}</main>
-              <Toaster />
             </TasksProvider>
           </SidebarProvider>
         </UserProvider>
+        <Toaster />
       </body>
     </html>
   );
