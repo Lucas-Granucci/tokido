@@ -31,7 +31,7 @@ import { CreateDialog } from "./create-dialog";
 import { useUser } from "@/contexts/user-context";
 
 const navItems = [
-  { title: "Overview", url: "/overview", icon: Home },
+  { title: "Home", url: "/", icon: Home },
   { title: "Tasks", url: "/tasks", icon: CheckCircle },
   { title: "Calendar", url: "/calendar", icon: Calendar },
   { title: "Settings", url: "/settings", icon: Settings },

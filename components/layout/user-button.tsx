@@ -1,6 +1,7 @@
-import { User } from "@supabase/supabase-js";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { signOut } from "@/lib/auth";
+import { useUser } from "@/contexts/user-context";
 import { ChevronsUpDown, LogOut, User2 } from "lucide-react";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -15,11 +16,10 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from "../ui/sidebar";
-import { useUser } from "@/contexts/user-context";
 
 export function UserButton() {
   const { isMobile } = useSidebar();
-  const { user, signOut } = useUser();
+  const { user } = useUser();
 
   const handleSignOut = async () => {
     await signOut();

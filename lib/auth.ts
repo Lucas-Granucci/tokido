@@ -1,7 +1,7 @@
 "use server";
 
-import { createClient } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
+import { createClient } from "@/lib/supabase/server";
 
 export async function signUp(formData: {
   email: string;
@@ -38,7 +38,7 @@ export async function signIn(formData: { email: string; password: string }) {
     return { error: error.message };
   }
 
-  redirect("/overview");
+  redirect("/");
 }
 
 export async function signOut() {

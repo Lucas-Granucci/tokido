@@ -1,14 +1,14 @@
-import { Task } from "@/lib/tasks/types";
-import { Card, CardContent } from "../ui/card";
-import { Button } from "../ui/button";
-import { Calendar, X } from "lucide-react";
 import { Badge } from "../ui/badge";
+import { Button } from "../ui/button";
+import { Task } from "@/lib/tasks/types";
+import { Calendar, X } from "lucide-react";
+import { Card, CardContent } from "../ui/card";
+import { useTasks } from "@/contexts/tasks-context";
 import {
   getPriorityColor,
   getDurationColor,
   getCategoryColor,
 } from "./utils/config-utils";
-import { useTasks } from "@/contexts/tasks-context";
 
 interface TaskCardProps {
   task: Task;

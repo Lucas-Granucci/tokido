@@ -5,6 +5,7 @@ import { Toaster } from "@/components/ui/sonner";
 import { getCurrentUser } from "@/lib/user-server";
 import { TasksProvider } from "@/contexts/tasks-context";
 import { UserProvider } from "@/contexts/user-context";
+import { AuthGuard } from "@/components/auth/auth-guard";
 
 export const metadata = {
   title: "Tokido",
@@ -24,12 +25,14 @@ export default async function RootLayout({ children }: RootLayoutProps) {
     <html lang="en">
       <body className="flex h-screen bg-muted/30 text-foreground">
         <UserProvider initialUser={user}>
-          <SidebarProvider>
-            <TasksProvider>
-              <AppSidebar />
-              <main className="flex-1 overflow-y-auto p-6">{children}</main>
-            </TasksProvider>
-          </SidebarProvider>
+          <AuthGuard>
+            <SidebarProvider>
+              <TasksProvider>
+                <AppSidebar />
+                <main className="flex-1 overflow-y-auto p-6">{children}</main>
+              </TasksProvider>
+            </SidebarProvider>
+          </AuthGuard>
         </UserProvider>
         <Toaster />
       </body>

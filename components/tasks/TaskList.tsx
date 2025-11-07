@@ -1,8 +1,8 @@
-import { TaskGroup } from "./utils/view-types";
-import { Card, CardHeader, CardContent, CardTitle } from "../ui/card";
+import TaskCard from "./TaskCard";
 import { Plus } from "lucide-react";
 import { Button } from "../ui/button";
-import TaskCard from "./TaskCard";
+import { TaskGroup } from "./utils/view-types";
+import { Card, CardHeader, CardContent, CardTitle } from "../ui/card";
 
 interface TaskListProps {
   group: TaskGroup;

@@ -1,7 +1,7 @@
-import { Dialog, DialogContent, DialogTitle } from "../ui/dialog";
-import { TaskForm } from "../forms/task-form";
 import { toast } from "sonner";
+import { TaskForm } from "../forms/task-form";
 import { useTasks } from "@/contexts/tasks-context";
+import { Dialog, DialogContent, DialogTitle } from "../ui/dialog";
 
 interface CreateDialogProps {
   open: boolean;

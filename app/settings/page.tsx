@@ -1,6 +1,3 @@
-import { getCurrentUser } from "@/lib/user-server";
-import { redirect } from "next/navigation";
-
 export default async function SettingsPage() {
   return (
     <div>

@@ -1,6 +1,6 @@
 import { supabase } from "../supabase/client";
-import { getCurrentUserClient } from "@/lib/user-client";
 import type { Task, TaskFormData } from "./types";
+import { getCurrentUserClient } from "@/lib/user-client";
 
 export const tasksClient = {
   // get all tasks for current user

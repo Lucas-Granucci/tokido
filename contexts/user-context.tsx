@@ -1,15 +1,13 @@
 "use client";
 
-import React, { createContext, useContext, useEffect, useState } from "react";
-import { User, Session } from "@supabase/supabase-js";
 import { supabase } from "@/lib/supabase/client";
-import { AuthForm } from "@/components/auth/auth-form";
+import { User, Session } from "@supabase/supabase-js";
+import React, { createContext, useContext, useEffect, useState } from "react";
 
 interface UserContextType {
   user: User | null;
   session: Session | null;
   loading: boolean;
-  signOut: () => Promise<void>;
   refreshSession: () => Promise<void>;
 }
 
@@ -39,15 +37,6 @@ export function UserProvider({ children, initialUser }: UserContextProps) {
     }
   };
 
-  const signOut = async () => {
-    try {
-      await supabase.auth.signOut();
-    } catch (error) {
-      console.error("Error signing out:", error);
-      throw error;
-    }
-  };
-
   useEffect(() => {
     if (!initialUser) {
       refreshSession();
@@ -72,25 +61,8 @@ export function UserProvider({ children, initialUser }: UserContextProps) {
     user,
     session,
     loading,
-    signOut,
     refreshSession,
   };
-
-  if (loading) {
-    return (
-      <div>
-        <h3>Loading...</h3>
-      </div>
-    );
-  }
-
-  if (!user) {
-    return (
-      <div className="min-h-screen w-full flex items-center justify-center bg-background">
-        <AuthForm />
-      </div>
-    );
-  }
 
   return <UserContext.Provider value={value}>{children}</UserContext.Provider>;
 }
