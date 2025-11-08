@@ -1,8 +1,13 @@
 import TaskCard from "./TaskCard";
 import { Plus } from "lucide-react";
-import { Button } from "../ui/button";
+import { Button } from "../components/ui/button";
 import { TaskGroup } from "./utils/view-types";
-import { Card, CardHeader, CardContent, CardTitle } from "../ui/card";
+import {
+  Card,
+  CardHeader,
+  CardContent,
+  CardTitle,
+} from "../components/ui/card";
 import { useCreateDialog } from "@/contexts/create-dialog-context";
 
 interface TaskListProps {

@@ -1,21 +1,25 @@
-import { Button } from "../ui/button";
-import { Field, FieldGroup, FieldLabel } from "../ui/field";
-import { Input } from "../ui/input";
+import { toast } from "sonner";
+import { useState } from "react";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import { taskViewConfigs } from "./utils/view-config";
+import { Field, FieldGroup, FieldLabel } from "@/components/ui/field";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "../ui/select";
-import { viewConfigs } from "../tasks/utils/view-config";
-import { useState } from "react";
-import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
+} from "@/components/ui/select";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
 import { ChevronDownIcon } from "lucide-react";
-import { Calendar } from "../ui/calendar";
-import { tasksClient } from "@/lib/tasks/tasksClient";
-import { TaskFormData } from "@/lib/tasks/types";
-import { toast } from "sonner";
+import { Calendar } from "@/components/ui/calendar";
+import { tasksClient } from "@/tasks/tasksClient";
+import { TaskFormData } from "@/tasks/interfaces";
 
 interface TaskFormProps {
   onSubmitSuccess: () => void;
@@ -110,7 +114,7 @@ export function TaskForm({ onSubmitSuccess, onCancel }: TaskFormProps) {
                 <SelectValue placeholder="Category" />
               </SelectTrigger>
               <SelectContent>
-                {Object.values(viewConfigs.category).map((item) => (
+                {Object.values(taskViewConfigs.category).map((item) => (
                   <SelectItem key={item.label} value={item.label}>
                     {item.label}
                   </SelectItem>
@@ -132,7 +136,7 @@ export function TaskForm({ onSubmitSuccess, onCancel }: TaskFormProps) {
                 <SelectValue placeholder="Priority" />
               </SelectTrigger>
               <SelectContent>
-                {Object.values(viewConfigs.priority).map((item) => (
+                {Object.values(taskViewConfigs.priority).map((item) => (
                   <SelectItem key={item.label} value={item.label}>
                     {item.label}
                   </SelectItem>

@@ -1,9 +1,9 @@
 import { toast } from "sonner";
-import { Badge } from "../ui/badge";
-import { Button } from "../ui/button";
-import { Task } from "@/lib/tasks/types";
+import { Badge } from "../components/ui/badge";
+import { Button } from "../components/ui/button";
+import { Task } from "@/tasks/types";
 import { Calendar, X } from "lucide-react";
-import { Card, CardContent } from "../ui/card";
+import { Card, CardContent } from "../components/ui/card";
 import { useTasks } from "@/contexts/tasks-context";
 import confetti from "canvas-confetti";
 import {

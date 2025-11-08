@@ -1,7 +1,7 @@
-import { Task } from "@/lib/tasks/types";
-import { ViewConfig } from "./view-types";
+import { Task } from "../interfaces";
+import { TaskViewConfig } from "../interfaces";
 
-export const viewConfigs = {
+export const taskViewConfigs = {
   priority: {
     high: {
       label: "High",
@@ -18,7 +18,7 @@ export const viewConfigs = {
       color: "#16A34A",
       filter: (task: Task) => task.priority === "Low",
     },
-  } as ViewConfig,
+  } as TaskViewConfig,
 
   duration: {
     short: {
@@ -52,7 +52,7 @@ export const viewConfigs = {
       color: "#991B1B",
       filter: (task) => (task.duration || 0) > 120,
     },
-  } as ViewConfig,
+  } as TaskViewConfig,
 
   category: {
     school: {
@@ -85,5 +85,5 @@ export const viewConfigs = {
       color: "#4B5563",
       filter: (task) => !task.category || task.category === "Other",
     },
-  } as ViewConfig,
+  } as TaskViewConfig,
 };

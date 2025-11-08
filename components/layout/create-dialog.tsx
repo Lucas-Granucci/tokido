@@ -1,11 +1,10 @@
 "use client";
 
 import { toast } from "sonner";
-import { TaskForm } from "../forms/task-form";
+import { TaskForm } from "@/tasks/task-form";
 import { useTasks } from "@/contexts/tasks-context";
 import { Dialog, DialogContent, DialogTitle } from "../ui/dialog";
 import { useCreateDialog } from "@/contexts/create-dialog-context";
-import { Task } from "@/lib/tasks/types";
 
 export function CreateDialog() {
   const { refreshTasks } = useTasks();

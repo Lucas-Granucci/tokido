@@ -2,12 +2,12 @@
 
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Calendar, Clock, Flag, Folder, Plus } from "lucide-react";
-import { TaskGrid } from "@/components/tasks/TaskGrid";
-import { ViewType } from "@/components/tasks/utils/view-types";
+import { TaskGrid } from "@/tasks/TaskGrid";
+import { TaskViewType } from "@/tasks/types";
 import { useTasks } from "@/contexts/tasks-context";
 
 interface TaskCategory {
-  value: ViewType;
+  value: TaskViewType;
   title: string;
   icon: React.ElementType;
 }
