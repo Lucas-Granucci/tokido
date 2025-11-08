@@ -1,13 +1,8 @@
-import { CalendarViewType } from "@/tasks/utils/view-types";
-import React from "react";
+"use client";
+
 import { Clock, Grid2X2, List, Grid3X3, Flag } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-
-interface CalendarView {
-  value: CalendarViewType;
-  title: string;
-  icon: React.ElementType;
-}
+import { CalendarView } from "@/calendar/interfaces";
 
 export default function CalendarPageClient() {
   const CalendarViews: CalendarView[] = [

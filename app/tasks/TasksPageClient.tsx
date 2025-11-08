@@ -3,14 +3,8 @@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Calendar, Clock, Flag, Folder, Plus } from "lucide-react";
 import { TaskGrid } from "@/tasks/TaskGrid";
-import { TaskViewType } from "@/tasks/types";
 import { useTasks } from "@/contexts/tasks-context";
-
-interface TaskCategory {
-  value: TaskViewType;
-  title: string;
-  icon: React.ElementType;
-}
+import { TaskCategory } from "@/tasks/interfaces";
 
 export default function TasksPageClient() {
   const { tasks, loading } = useTasks();

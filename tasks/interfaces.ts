@@ -1,3 +1,5 @@
+import { TaskViewType } from "./types";
+
 export interface Task {
   id: string;
   user_id: string;
@@ -23,6 +25,12 @@ export interface TaskGroup {
   label: string;
   color: string;
   tasks: Task[];
+}
+
+export interface TaskCategory {
+  value: TaskViewType;
+  title: string;
+  icon: React.ElementType;
 }
 
 export interface TaskViewConfig {
