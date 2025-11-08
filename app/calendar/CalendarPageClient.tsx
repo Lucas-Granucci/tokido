@@ -6,7 +6,7 @@ import { CalendarView } from "@/calendar/interfaces";
 
 export default function CalendarPageClient() {
   const CalendarViews: CalendarView[] = [
-    { value: "day", title: "Day", icon: Clock },
+    { value: "day", title: "Day", icon: List },
     { value: "week", title: "Week", icon: Flag },
     { value: "month", title: "Month", icon: Grid2X2 },
     { value: "year", title: "Year", icon: Grid3X3 },
