@@ -1,6 +1,6 @@
 import { formatDate } from "date-fns";
 import { useEvents } from "@/contexts/events-context";
-import { getTodayInTimeZone } from "../utils";
+import { getTodayInTimeZone } from "../calendar-utils";
 
 export function TodayButton() {
   const { setSelectedDate, selectedDate } = useEvents();

@@ -1,24 +1,26 @@
 import { toast } from "sonner";
+import { useRef, useState } from "react";
+
+import confetti from "canvas-confetti";
+import { Calendar, X } from "lucide-react";
 import { Badge } from "../components/ui/badge";
 import { Button } from "../components/ui/button";
-import { Task } from "./interfaces";
-import { Calendar, X } from "lucide-react";
 import { Card, CardContent } from "../components/ui/card";
-import { useTasks } from "@/contexts/tasks-context";
-import confetti from "canvas-confetti";
+import { motion, AnimatePresence } from "framer-motion";
+
 import {
   getPriorityColor,
   getDurationColor,
   getCategoryColor,
-} from "./utils/config-utils";
-import { useRef, useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+} from "@/utils/config-utils";
+import type { Task } from "./interfaces";
+import { useTasks } from "@/contexts/tasks-context";
 
-interface TaskCardProps {
+interface IProps {
   task: Task;
 }
 
-export default function TaskCard({ task }: TaskCardProps) {
+export default function TaskCard({ task }: IProps) {
   const buttonRef = useRef<HTMLButtonElement>(null);
   const { deleteTask } = useTasks();
   const [isDeleting, setIsDeleting] = useState(false);

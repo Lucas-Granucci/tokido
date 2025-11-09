@@ -1,8 +1,8 @@
-import TaskList from "./TaskList";
-import { Task } from "./interfaces";
-import { taskViewConfigs } from "./utils/view-config";
-import { TaskGroup } from "./interfaces";
-import { TaskViewType } from "./types";
+import TaskList from "./task-list";
+import type { Task } from "./interfaces";
+import type { TaskGroup } from "./interfaces";
+import type { TaskViewType } from "@/types/views";
+import presentationConfigs from "@/utils/presentation-configs";
 
 interface TasksContainerProps {
   tasks: Task[];
@@ -11,7 +11,7 @@ interface TasksContainerProps {
 
 export function TasksContainer({ tasks, viewOption }: TasksContainerProps) {
   const groupedTasks: TaskGroup[] = Object.entries(
-    taskViewConfigs[viewOption]
+    presentationConfigs[viewOption]
   ).map(([key, config]) => ({
     id: key,
     label: config.label,

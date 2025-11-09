@@ -1,4 +1,4 @@
-import TaskCard from "./TaskCard";
+import TaskCard from "./task-card";
 import { Plus } from "lucide-react";
 import { Button } from "../components/ui/button";
 import { TaskGroup } from "./interfaces";

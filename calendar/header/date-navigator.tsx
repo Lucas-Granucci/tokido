@@ -1,12 +1,10 @@
 import { formatDate } from "date-fns";
+import { Button } from "@/components/ui/button";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 
-import { Event } from "../interfaces";
 import { useEvents } from "@/contexts/events-context";
-import { Button } from "@/components/ui/button";
-
-import { navigateDate, rangeText } from "../utils";
-import { CalendarViewType } from "../types";
+import type { CalendarViewType } from "@/types/views";
+import { navigateDate, rangeText } from "../calendar-utils";
 
 interface DateNavigatorProps {
   view: CalendarViewType;

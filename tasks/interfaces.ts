@@ -1,4 +1,4 @@
-import { TaskViewType } from "./types";
+import type { TaskViewType } from "@/types/views";
 
 export interface Task {
   id: string;
@@ -31,14 +31,4 @@ export interface TaskCategory {
   value: TaskViewType;
   title: string;
   icon: React.ElementType;
-}
-
-export interface TaskViewConfig {
-  [key: string]: {
-    label: string;
-    color: string;
-    eventBadgeClasses: string;
-    filter: (task: Task) => boolean;
-    sort?: (a: Task, b: Task) => number;
-  };
 }

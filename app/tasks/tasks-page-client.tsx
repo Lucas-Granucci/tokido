@@ -2,7 +2,7 @@
 
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Calendar, Clock, Flag, Folder, Plus } from "lucide-react";
-import { TasksContainer } from "@/tasks/TasksContainer";
+import { TasksContainer } from "@/tasks/tasks-container";
 import { useTasks } from "@/contexts/tasks-context";
 import { TaskCategory } from "@/tasks/interfaces";
 

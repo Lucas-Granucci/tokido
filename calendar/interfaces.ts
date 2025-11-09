@@ -1,4 +1,4 @@
-import { CalendarViewType } from "./types";
+import type { CalendarViewType } from "@/types/views";
 
 export interface Event {
   id: string;

@@ -1,7 +1,10 @@
 import { toast } from "sonner";
 import { useState } from "react";
+
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { ChevronDownIcon } from "lucide-react";
+import { Calendar } from "@/components/ui/calendar";
 import { Field, FieldGroup, FieldLabel } from "@/components/ui/field";
 import {
   Select,
@@ -15,12 +18,10 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { ChevronDownIcon } from "lucide-react";
-import { Calendar } from "@/components/ui/calendar";
-import { tasksClient } from "@/tasks/tasksClient";
-import { EventFormData } from "./interfaces";
+
 import { calendarClient } from "./calendarClient";
-import { taskViewConfigs } from "@/tasks/utils/view-config";
+import type { EventFormData } from "./interfaces";
+import presentationConfigs from "@/utils/presentation-configs";
 
 interface IProps {
   onSubmitSuccess: () => void;
@@ -132,7 +133,7 @@ export function EventForm({ onSubmitSuccess, onCancel }: IProps) {
               <SelectValue placeholder="Category" />
             </SelectTrigger>
             <SelectContent>
-              {Object.values(taskViewConfigs.category).map((item) => (
+              {Object.values(presentationConfigs.category).map((item) => (
                 <SelectItem key={item.label} value={item.label}>
                   {item.label}
                 </SelectItem>

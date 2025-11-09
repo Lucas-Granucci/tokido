@@ -1,15 +1,16 @@
-import { TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { CalendarViewOption } from "../interfaces";
-import { DateNavigator } from "./date-navigator";
 import { TodayButton } from "./today-button";
-import { CalendarViewType } from "../types";
+import { DateNavigator } from "./date-navigator";
+import { TabsList, TabsTrigger } from "@/components/ui/tabs";
 
-interface CalendarHeaderProps {
+import type { CalendarViewType } from "@/types/views";
+import type { CalendarViewOption } from "../interfaces";
+
+interface IProps {
   views: CalendarViewOption[];
   activeView: CalendarViewType;
 }
 
-export function CalendarHeader({ views, activeView }: CalendarHeaderProps) {
+export function CalendarHeader({ views, activeView }: IProps) {
   return (
     <div className="space-y-2">
       <h1 className="text-3xl font-bold">Calendar</h1>

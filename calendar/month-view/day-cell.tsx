@@ -1,7 +1,7 @@
 import { useEvents } from "@/contexts/events-context";
 import { CalendarCell, Event } from "../interfaces";
 import { useMemo } from "react";
-import { getMonthCellEvents } from "../utils";
+import { getMonthCellEvents } from "../calendar-utils";
 import { cn } from "@/lib/utils";
 import { isToday, startOfDay } from "date-fns";
 import { MonthEventBadge } from "./month-event-badge";

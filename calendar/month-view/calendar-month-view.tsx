@@ -1,7 +1,10 @@
 import { useEvents } from "@/contexts/events-context";
 import { Event } from "../interfaces";
 import { useMemo } from "react";
-import { calculateMonthEventPositions, getCalendarCells } from "../utils";
+import {
+  calculateMonthEventPositions,
+  getCalendarCells,
+} from "../calendar-utils";
 import { DayCell } from "./day-cell";
 
 interface IProps {

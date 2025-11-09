@@ -1,8 +1,10 @@
 import { toast } from "sonner";
 import { useState } from "react";
+
 import { Input } from "@/components/ui/input";
+import { ChevronDownIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { taskViewConfigs } from "./utils/view-config";
+import { Calendar } from "@/components/ui/calendar";
 import { Field, FieldGroup, FieldLabel } from "@/components/ui/field";
 import {
   Select,
@@ -16,10 +18,10 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { ChevronDownIcon } from "lucide-react";
-import { Calendar } from "@/components/ui/calendar";
+
 import { tasksClient } from "@/tasks/tasksClient";
-import { TaskFormData } from "@/tasks/interfaces";
+import type { TaskFormData } from "@/tasks/interfaces";
+import presentationConfigs from "@/utils/presentation-configs";
 
 interface TaskFormProps {
   onSubmitSuccess: () => void;
@@ -114,7 +116,7 @@ export function TaskForm({ onSubmitSuccess, onCancel }: TaskFormProps) {
                 <SelectValue placeholder="Category" />
               </SelectTrigger>
               <SelectContent>
-                {Object.values(taskViewConfigs.category).map((item) => (
+                {Object.values(presentationConfigs.category).map((item) => (
                   <SelectItem key={item.label} value={item.label}>
                     {item.label}
                   </SelectItem>
@@ -136,7 +138,7 @@ export function TaskForm({ onSubmitSuccess, onCancel }: TaskFormProps) {
                 <SelectValue placeholder="Priority" />
               </SelectTrigger>
               <SelectContent>
-                {Object.values(taskViewConfigs.priority).map((item) => (
+                {Object.values(presentationConfigs.priority).map((item) => (
                   <SelectItem key={item.label} value={item.label}>
                     {item.label}
                   </SelectItem>

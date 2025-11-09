@@ -1,5 +1,5 @@
 import { useMemo } from "react";
-import { CalendarViewOption, Event } from "./interfaces";
+import type { CalendarViewOption, Event } from "./interfaces";
 import { isSameDay, parseISO } from "date-fns";
 import { useEvents } from "@/contexts/events-context";
 import { CalendarMonthView } from "./month-view/calendar-month-view";

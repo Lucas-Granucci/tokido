@@ -1,13 +1,14 @@
 "use client";
 
-import { Columns2, Grid2X2, List, Grid3X3, CalendarRange } from "lucide-react";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { CalendarViewOption } from "@/calendar/interfaces";
-import { CalendarContainer } from "@/calendar/CalendarContainer";
-import { useEvents } from "@/contexts/events-context";
-import { CalendarHeader } from "@/calendar/header/CalendarHeader";
 import { useState } from "react";
-import { CalendarViewType } from "@/calendar/types";
+import { Columns2, Grid2X2, List, Grid3X3, CalendarRange } from "lucide-react";
+import { Tabs, TabsContent } from "@/components/ui/tabs";
+import { CalendarContainer } from "@/calendar/calendar-container";
+import { CalendarHeader } from "@/calendar/header/calendar-header";
+
+import { useEvents } from "@/contexts/events-context";
+import type { CalendarViewType } from "@/types/views";
+import type { CalendarViewOption } from "@/calendar/interfaces";
 
 export default function CalendarPageClient() {
   const { events, loading } = useEvents();

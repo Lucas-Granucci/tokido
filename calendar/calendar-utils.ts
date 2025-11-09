@@ -20,9 +20,9 @@ import {
   startOfDay,
   isSameDay,
 } from "date-fns";
-import { CalendarViewType } from "./types";
-import { CalendarCell } from "./interfaces";
-import { Event } from "./interfaces";
+import type { CalendarViewType } from "@/types/views";
+import type { CalendarCell } from "./interfaces";
+import type { Event } from "./interfaces";
 
 export const APP_TIMEZONE = "America/Chicago";
 export function getTodayInTimeZone(timezone = APP_TIMEZONE) {
