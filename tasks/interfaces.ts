@@ -37,6 +37,7 @@ export interface TaskViewConfig {
   [key: string]: {
     label: string;
     color: string;
+    eventBadgeClasses: string;
     filter: (task: Task) => boolean;
     sort?: (a: Task, b: Task) => number;
   };
