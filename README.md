@@ -8,3 +8,4 @@
 - Create settings page (sync with account)
 - Fix navigation on mobile
 - Fix login toast bug
+- Improve loading screens

@@ -2,7 +2,7 @@
 
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Calendar, Clock, Flag, Folder, Plus } from "lucide-react";
-import { TaskGrid } from "@/tasks/TaskGrid";
+import { TasksContainer } from "@/tasks/TasksContainer";
 import { useTasks } from "@/contexts/tasks-context";
 import { TaskCategory } from "@/tasks/interfaces";
 
@@ -40,7 +40,7 @@ export default function TasksPageClient() {
 
         {TaskCategories.map((item) => (
           <TabsContent value={item.value} key={item.value}>
-            <TaskGrid tasks={tasks} viewOption={item.value} />
+            <TasksContainer tasks={tasks} viewOption={item.value} />
           </TabsContent>
         ))}
       </Tabs>

@@ -20,8 +20,14 @@ export interface EventFormData {
   description: string;
 }
 
-export interface CalendarView {
+export interface CalendarViewOption {
   value: CalendarViewType;
   title: string;
   icon: React.ElementType;
+}
+
+export interface CalendarCell {
+  day: number;
+  currentMonth: boolean;
+  date: Date;
 }

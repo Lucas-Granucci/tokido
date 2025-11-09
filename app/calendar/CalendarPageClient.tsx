@@ -1,42 +1,47 @@
 "use client";
 
-import { Clock, Grid2X2, List, Grid3X3, Flag } from "lucide-react";
+import { Columns2, Grid2X2, List, Grid3X3, CalendarRange } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { CalendarView } from "@/calendar/interfaces";
+import { CalendarViewOption } from "@/calendar/interfaces";
+import { CalendarContainer } from "@/calendar/CalendarContainer";
+import { useEvents } from "@/contexts/events-context";
+import { CalendarHeader } from "@/calendar/header/CalendarHeader";
+import { useState } from "react";
+import { CalendarViewType } from "@/calendar/types";
 
 export default function CalendarPageClient() {
-  const CalendarViews: CalendarView[] = [
+  const { events, loading } = useEvents();
+  const [activeView, setActiveView] = useState<CalendarViewType>("month");
+
+  const handleViewChange = (view: string) => {
+    setActiveView(view as CalendarViewType);
+  };
+
+  const CalendarViews: CalendarViewOption[] = [
     { value: "day", title: "Day", icon: List },
-    { value: "week", title: "Week", icon: Flag },
+    { value: "week", title: "Week", icon: Columns2 },
     { value: "month", title: "Month", icon: Grid2X2 },
     { value: "year", title: "Year", icon: Grid3X3 },
-    { value: "agenda", title: "Agenda", icon: List },
+    { value: "agenda", title: "Agenda", icon: CalendarRange },
   ];
 
+  if (loading) {
+    return <div>Loading tasks...</div>;
+  }
+
   return (
-    <div className="space-y-2">
-      <h1 className="text-3xl font-bold">Calendar</h1>
+    <Tabs
+      defaultValue="month"
+      className="w-full"
+      onValueChange={handleViewChange}
+    >
+      <CalendarHeader views={CalendarViews} activeView={activeView} />
 
-      <Tabs defaultValue="priority" className="w-full">
-        <TabsList className="w-full">
-          {CalendarViews.map((item) => (
-            <TabsTrigger
-              value={item.value}
-              key={item.value}
-              className="w-full justify-center gap-2"
-            >
-              <item.icon className="h-4 w-4" />
-              <span>{item.title}</span>
-            </TabsTrigger>
-          ))}
-        </TabsList>
-
-        {CalendarViews.map((item) => (
-          <TabsContent value={item.value} key={item.value}>
-            <h1>{item.title}</h1>
-          </TabsContent>
-        ))}
-      </Tabs>
-    </div>
+      {CalendarViews.map((item) => (
+        <TabsContent value={item.value} key={item.value}>
+          <CalendarContainer events={events} viewOption={item} />
+        </TabsContent>
+      ))}
+    </Tabs>
   );
 }

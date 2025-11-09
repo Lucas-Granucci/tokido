@@ -4,12 +4,12 @@ import { taskViewConfigs } from "./utils/view-config";
 import { TaskGroup } from "./interfaces";
 import { TaskViewType } from "./types";
 
-interface TaskGridProps {
+interface TasksContainerProps {
   tasks: Task[];
   viewOption: TaskViewType;
 }
 
-export function TaskGrid({ tasks, viewOption }: TaskGridProps) {
+export function TasksContainer({ tasks, viewOption }: TasksContainerProps) {
   const groupedTasks: TaskGroup[] = Object.entries(
     taskViewConfigs[viewOption]
   ).map(([key, config]) => ({
