@@ -9,3 +9,8 @@
 - Fix navigation on mobile
 - Fix login toast bug
 - Improve loading screens
+- Fix calendar form
+- Rename event stuff to calendar
+- Add edit/delete event function
+- Add drag n drop calendar functionality
+- Add other calendar views
