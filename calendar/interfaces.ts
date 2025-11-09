@@ -15,8 +15,8 @@ export interface Event {
 export interface EventFormData {
   name: string;
   category: string;
-  start_date: Date;
-  end_date: Date;
+  start_date: Date | null;
+  end_date: Date | null;
   description: string;
 }
 
