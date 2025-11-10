@@ -4,11 +4,12 @@ import { toast } from "sonner";
 import { TaskForm } from "@/tasks/task-form";
 import { EventForm } from "@/calendar/event-form";
 import { useTasks } from "@/contexts/tasks-context";
-import { Dialog, DialogContent, DialogTitle } from "../ui/dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "../ui/dialog";
 import { useCreateDialog } from "@/contexts/create-dialog-context";
 import { useEvents } from "@/contexts/events-context";
 import { useState } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "../ui/tabs";
+import { Plus } from "lucide-react";
 
 export function CreateDialog() {
   const { refreshTasks } = useTasks();
@@ -42,25 +43,33 @@ export function CreateDialog() {
 
   return (
     <Dialog open={isCreateDialogOpen} onOpenChange={setIsCreateDialogOpen}>
-      <DialogContent>
-        <DialogTitle>Create</DialogTitle>
+      <DialogContent className="sm:max-w-md">
+        <DialogHeader>
+          <DialogTitle>Create New Item</DialogTitle>
+        </DialogHeader>
+
         <Tabs
           value={activeTab}
           onValueChange={(value) => setActiveTab(value as "task" | "event")}
+          className="mt-2"
         >
           <TabsList className="grid w-full grid-cols-2">
-            <TabsTrigger value="task">Task</TabsTrigger>
-            <TabsTrigger value="event">Event</TabsTrigger>
+            <TabsTrigger value="task" className="flex items-center gap-2">
+              <span>Task</span>
+            </TabsTrigger>
+            <TabsTrigger value="event" className="flex items-center gap-2">
+              <span>Event</span>
+            </TabsTrigger>
           </TabsList>
 
-          <TabsContent value="task">
+          <TabsContent value="task" className="mt-4">
             <TaskForm
               onSubmitSuccess={handleTaskSuccess}
               onCancel={closeCreateDialog}
             />
           </TabsContent>
 
-          <TabsContent value="event">
+          <TabsContent value="event" className="mt-4">
             <EventForm
               onSubmitSuccess={handleEventSuccess}
               onCancel={closeCreateDialog}

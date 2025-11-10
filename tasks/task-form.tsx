@@ -2,10 +2,15 @@ import { toast } from "sonner";
 import { useState } from "react";
 
 import { Input } from "@/components/ui/input";
-import { ChevronDownIcon } from "lucide-react";
+import { CalendarIcon, ChevronDownIcon, Clock } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
-import { Field, FieldGroup, FieldLabel } from "@/components/ui/field";
+import {
+  Field,
+  FieldError,
+  FieldGroup,
+  FieldLabel,
+} from "@/components/ui/field";
 import {
   Select,
   SelectContent,
@@ -22,6 +27,7 @@ import {
 import { tasksClient } from "@/tasks/tasksClient";
 import type { TaskFormData } from "@/tasks/interfaces";
 import presentationConfigs from "@/utils/presentation-configs";
+import { cn } from "@/lib/utils";
 
 interface TaskFormProps {
   onSubmitSuccess: () => void;
@@ -40,11 +46,32 @@ export function TaskForm({ onSubmitSuccess, onCancel }: TaskFormProps) {
   const [hours, setHours] = useState(0);
   const [minutes, setMinutes] = useState(0);
   const [loading, setLoading] = useState(false);
+  const [errors, setErrors] = useState<Record<string, string>>({});
+
+  const validateForm = () => {
+    const newErrors: Record<string, string> = {};
+
+    if (!formData.name.trim()) {
+      newErrors.name = "Task name is required";
+    }
+    if (!formData.category) {
+      newErrors.category = "Category is required";
+    }
+    if (!formData.priority) {
+      newErrors.priority = "Priority is required";
+    }
+    if (hours === 0 && minutes === 0) {
+      newErrors.duration = "Duration is required";
+    }
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (!formData.name || !formData.category || !formData.priority) {
+    if (!validateForm()) {
       toast.error("Please fill in all required fields");
       return;
     }
@@ -74,6 +101,7 @@ export function TaskForm({ onSubmitSuccess, onCancel }: TaskFormProps) {
       });
       setHours(0);
       setMinutes(0);
+      setErrors({});
 
       onSubmitSuccess();
     } catch (error) {
@@ -85,128 +113,184 @@ export function TaskForm({ onSubmitSuccess, onCancel }: TaskFormProps) {
   };
 
   return (
-    <form onSubmit={handleSubmit}>
+    <form onSubmit={handleSubmit} className="space-y-4">
       <FieldGroup>
         {/* Task Name Field */}
         <Field>
-          <FieldLabel htmlFor="task-name">Task Name</FieldLabel>
+          <FieldLabel htmlFor="task-name" className="text-sm font-medium">
+            Task Name
+          </FieldLabel>
           <Input
             id="task-name"
-            placeholder="Read a book"
-            required
+            placeholder="Read a book, Complete project report..."
+            className={cn(errors.name && "border-destructive")}
             value={formData.name}
-            onChange={(e) =>
-              setFormData((prev) => ({ ...prev, name: e.target.value }))
-            }
+            onChange={(e) => {
+              setFormData((prev) => ({ ...prev, name: e.target.value }));
+              if (errors.name) setErrors((prev) => ({ ...prev, name: "" }));
+            }}
           />
+          {errors.name && <FieldError>{errors.name}</FieldError>}
         </Field>
 
         {/* Grid Fields */}
-        <div className="grid grid-cols-2 gap-4">
+        <div className="grid grid-cols-2 gap-3">
           {/* Category Field */}
           <Field>
-            <FieldLabel htmlFor="category-select">Category</FieldLabel>
+            <FieldLabel
+              htmlFor="category-select"
+              className="text-sm font-medium"
+            >
+              Category
+            </FieldLabel>
             <Select
               value={formData.category}
-              onValueChange={(value) =>
-                setFormData((prev) => ({ ...prev, category: value }))
-              }
+              onValueChange={(value) => {
+                setFormData((prev) => ({ ...prev, category: value }));
+                if (errors.category)
+                  setErrors((prev) => ({ ...prev, category: "" }));
+              }}
             >
-              <SelectTrigger id="category-select">
-                <SelectValue placeholder="Category" />
+              <SelectTrigger
+                id="category-select"
+                className={cn(errors.category && "border-destructive")}
+              >
+                <SelectValue placeholder="Select category" />
               </SelectTrigger>
               <SelectContent>
                 {Object.values(presentationConfigs.category).map((item) => (
                   <SelectItem key={item.label} value={item.label}>
-                    {item.label}
+                    <div className="flex items-center gap-2">
+                      {item.icon && <item.icon className="h-4 w-4" />}
+                      {item.label}
+                    </div>
                   </SelectItem>
                 ))}
               </SelectContent>
             </Select>
+            {errors.category && <FieldError>{errors.category}</FieldError>}
           </Field>
 
           {/* Priority Field */}
           <Field>
-            <FieldLabel htmlFor="priority-select">Priority</FieldLabel>
+            <FieldLabel
+              htmlFor="priority-select"
+              className="text-sm font-medium"
+            >
+              Priority
+            </FieldLabel>
             <Select
               value={formData.priority}
-              onValueChange={(value) =>
-                setFormData((prev) => ({ ...prev, priority: value }))
-              }
+              onValueChange={(value) => {
+                setFormData((prev) => ({ ...prev, priority: value }));
+                if (errors.priority)
+                  setErrors((prev) => ({ ...prev, priority: "" }));
+              }}
             >
-              <SelectTrigger id="priority-select">
-                <SelectValue placeholder="Priority" />
+              <SelectTrigger
+                id="priority-select"
+                className={cn(errors.priority && "border-destructive")}
+              >
+                <SelectValue placeholder="Select priority" />
               </SelectTrigger>
               <SelectContent>
                 {Object.values(presentationConfigs.priority).map((item) => (
                   <SelectItem key={item.label} value={item.label}>
-                    {item.label}
+                    <div className="flex items-center gap-2">
+                      {item.icon && <item.icon className="h-4 w-4" />}
+                      {item.label}
+                    </div>
                   </SelectItem>
                 ))}
               </SelectContent>
             </Select>
+            {errors.priority && <FieldError>{errors.priority}</FieldError>}
           </Field>
+        </div>
 
+        <div className="grid grid-cols-2 gap-3">
           {/* Duration Field */}
           <Field>
-            <FieldLabel htmlFor="duration">Duration</FieldLabel>
-            <div className="flex gap-2">
+            <FieldLabel className="text-sm font-medium">Duration</FieldLabel>
+            <div className="flex gap-3">
+              {/* Hours Input */}
               <div className="flex-1">
-                <Input
-                  type="number"
-                  min="0"
-                  placeholder="0"
-                  value={hours}
-                  onChange={(e) => setHours(parseInt(e.target.value) || 0)}
-                />
-                <span className="text-xs text-muted-foreground">hours</span>
+                <div className="space-y-1">
+                  <Input
+                    type="number"
+                    min="0"
+                    max="23"
+                    placeholder="0"
+                    className={cn(
+                      "w-full",
+                      errors.duration && "border-destructive"
+                    )}
+                    value={hours}
+                    onChange={(e) => {
+                      const value = Math.min(23, parseInt(e.target.value) || 0);
+                      setHours(value);
+                      if (errors.duration)
+                        setErrors((prev) => ({ ...prev, duration: "" }));
+                    }}
+                  />
+                  <span className="text-xs text-muted-foreground">hours</span>
+                </div>
               </div>
+
+              {/* Minutes Input */}
               <div className="flex-1">
-                <Input
-                  type="number"
-                  min="0"
-                  placeholder="0"
-                  value={minutes}
-                  onChange={(e) => {
-                    const value = parseInt(e.target.value) || 0;
-                    setMinutes(Math.min(value, 59));
-                  }}
-                />
-                <span className="text-xs text-muted-foreground">minutes</span>
+                <div className="space-y-1">
+                  <Input
+                    type="number"
+                    min="0"
+                    max="59"
+                    placeholder="0"
+                    className={cn(
+                      "w-full",
+                      errors.duration && "border-destructive"
+                    )}
+                    value={minutes}
+                    onChange={(e) => {
+                      const value = Math.min(59, parseInt(e.target.value) || 0);
+                      setMinutes(value);
+                      if (errors.duration)
+                        setErrors((prev) => ({ ...prev, duration: "" }));
+                    }}
+                  />
+                  <span className="text-xs text-muted-foreground">minutes</span>
+                </div>
               </div>
             </div>
+            {errors.duration && <FieldError>{errors.duration}</FieldError>}
           </Field>
 
           {/* Due Date Field */}
           <Field>
-            <FieldLabel htmlFor="due-date" className="px-1">
-              Due Date
-            </FieldLabel>
+            <FieldLabel className="text-sm font-medium">Due Date</FieldLabel>
             <Popover open={datePickerOpen} onOpenChange={setDatePickerOpen}>
               <PopoverTrigger asChild>
                 <Button
                   variant="outline"
-                  id="due-date"
-                  className="w-48 justify-between font-normal"
+                  className={cn(
+                    "w-full justify-start text-left font-normal",
+                    !formData.dueDate && "text-muted-foreground"
+                  )}
                 >
+                  <CalendarIcon className="mr-2 h-4 w-4" />
                   {formData.dueDate
                     ? formData.dueDate.toLocaleDateString()
                     : "Select date"}
-                  <ChevronDownIcon />
                 </Button>
               </PopoverTrigger>
-              <PopoverContent
-                className="w-auto overflow-hidden p-0"
-                align="start"
-              >
+              <PopoverContent className="w-auto p-0" align="start">
                 <Calendar
                   mode="single"
                   selected={formData.dueDate || undefined}
-                  captionLayout="dropdown"
                   onSelect={(date) => {
                     setFormData((prev) => ({ ...prev, dueDate: date || null }));
                     setDatePickerOpen(false);
                   }}
+                  autoFocus
                 />
               </PopoverContent>
             </Popover>
@@ -214,14 +298,20 @@ export function TaskForm({ onSubmitSuccess, onCancel }: TaskFormProps) {
         </div>
 
         {/* Buttons */}
-        <Field orientation="horizontal">
+        <div className="flex gap-2 pt-2">
           <Button
             type="submit"
-            className="cursor-pointer"
-            onClick={handleSubmit}
+            className="flex-1 cursor-pointer"
             disabled={loading}
           >
-            {loading ? "Creating..." : "Submit"}
+            {loading ? (
+              <>
+                <div className="mr-2 h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent" />
+                Creating...
+              </>
+            ) : (
+              "Create Task"
+            )}
           </Button>
           <Button
             variant="outline"
@@ -232,7 +322,7 @@ export function TaskForm({ onSubmitSuccess, onCancel }: TaskFormProps) {
           >
             Cancel
           </Button>
-        </Field>
+        </div>
       </FieldGroup>
     </form>
   );

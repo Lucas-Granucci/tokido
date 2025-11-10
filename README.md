@@ -14,3 +14,8 @@
 - Add edit/delete event function
 - Add drag n drop calendar functionality
 - Add other calendar views
+
+Resources:
+
+https://big-calendar.vercel.app/month-view
+https://github.com/lramos33/big-calendar/tree/main

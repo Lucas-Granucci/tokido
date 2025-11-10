@@ -38,6 +38,8 @@ export const calendarClient = {
       .select()
       .single();
 
+    console.log(eventData.start_date);
+
     if (error) throw error;
     return data;
   },
