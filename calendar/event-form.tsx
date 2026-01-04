@@ -41,6 +41,7 @@ export function EventForm({ onSubmitSuccess, onCancel }: IProps) {
   const [startDatePickerOpen, setStartDatePickerOpen] = useState(false);
   const [endDatePickerOpen, setEndDatePickerOpen] = useState(false);
   const [allDay, setAllDay] = useState(false);
+  const [multiDay, setMultiDay] = useState(false);
   const [formData, setFormData] = useState<EventFormData>({
     name: "",
     category: "",
@@ -59,6 +60,11 @@ export function EventForm({ onSubmitSuccess, onCancel }: IProps) {
     const newDate = new Date(date);
     newDate.setHours(hours, minutes, 0, 0);
     return newDate;
+  };
+
+  const timeToMinutes = (time: string): number => {
+    const [hours = 0, minutes = 0] = time.split(":").map(Number);
+    return hours * 60 + minutes;
   };
 
   // Helper function to set start of day
@@ -87,15 +93,21 @@ export function EventForm({ onSubmitSuccess, onCancel }: IProps) {
     if (!formData.start_date) {
       newErrors.start_date = "Start date is required";
     }
-    if (!formData.end_date) {
-      newErrors.end_date = "End date is required";
-    }
-    if (
-      formData.start_date &&
-      formData.end_date &&
-      formData.end_date <= formData.start_date
-    ) {
-      newErrors.end_date = "End date must be after start date";
+    if (multiDay) {
+      if (!formData.end_date) {
+        newErrors.end_date = "End date is required for multi-day events";
+      }
+      if (
+        formData.start_date &&
+        formData.end_date &&
+        formData.end_date <= formData.start_date
+      ) {
+        newErrors.end_date = "End date must be after start date";
+      }
+    } else if (!allDay && startTime && endTime) {
+      if (timeToMinutes(endTime) <= timeToMinutes(startTime)) {
+        newErrors.end_time = "End time must be after start time";
+      }
     }
 
     setErrors(newErrors);
@@ -113,14 +125,13 @@ export function EventForm({ onSubmitSuccess, onCancel }: IProps) {
 
     try {
       let finalStartDate = formData.start_date;
-      let finalEndDate = formData.end_date;
+      let finalEndDate = multiDay ? formData.end_date : formData.start_date;
 
       if (finalStartDate && finalEndDate) {
         if (allDay) {
           finalStartDate = setStartOfDay(finalStartDate);
           finalEndDate = setEndOfDay(finalEndDate);
         } else {
-          console.log("Start time:", startTime, "End time:", endTime); // Debug log
           finalStartDate = combineDateAndTime(finalStartDate, startTime);
           finalEndDate = combineDateAndTime(finalEndDate, endTime);
         }
@@ -145,6 +156,7 @@ export function EventForm({ onSubmitSuccess, onCancel }: IProps) {
       setStartTime("09:00");
       setEndTime("17:00");
       setAllDay(false);
+      setMultiDay(false);
       setErrors({});
 
       onSubmitSuccess();
@@ -188,7 +200,7 @@ export function EventForm({ onSubmitSuccess, onCancel }: IProps) {
           <Textarea
             id="event-description"
             placeholder="Describe your event (optional)"
-            rows={3}
+            rows={2}
             value={formData.description}
             onChange={(e) =>
               setFormData((prev) => ({ ...prev, description: e.target.value }))
@@ -196,8 +208,8 @@ export function EventForm({ onSubmitSuccess, onCancel }: IProps) {
           />
         </Field>
 
-        <div className="grid grid-cols-2 gap-4">
-          {/* Category Field */}
+        {/* Category and Options Row */}
+        <div className="grid grid-cols-1 sm:grid-cols-[1fr_auto] gap-4 items-start">
           <Field>
             <FieldLabel
               htmlFor="category-select"
@@ -233,151 +245,268 @@ export function EventForm({ onSubmitSuccess, onCancel }: IProps) {
             {errors.category && <FieldError>{errors.category}</FieldError>}
           </Field>
 
-          {/* All Day Toggle */}
-          <Field>
-            <FieldLabel className="text-sm font-medium opacity-0 pointer-events-none">
-              &nbsp; {/* Invisible label for alignment */}
-            </FieldLabel>
-            <div className="flex items-center gap-3 h-10 px-3 border border-transparent">
+          <div className="flex flex-wrap gap-4 pt-1 sm:pt-8">
+            <div className="flex items-center gap-2">
               <Switch
                 id="all-day"
                 checked={allDay}
-                onCheckedChange={setAllDay}
+                onCheckedChange={(checked) => {
+                  setAllDay(checked);
+                  if (checked) {
+                    setErrors((prev) => {
+                      const { end_time, ...rest } = prev;
+                      return rest;
+                    });
+                  }
+                }}
               />
               <Label
                 htmlFor="all-day"
-                className="text-sm font-medium cursor-pointer"
+                className="text-sm cursor-pointer select-none"
               >
-                All Day Event
+                All Day
               </Label>
             </div>
-          </Field>
+
+            <div className="flex items-center gap-2">
+              <Switch
+                id="multi-day"
+                checked={multiDay}
+                onCheckedChange={(checked) => {
+                  setMultiDay(checked);
+                  if (!checked) {
+                    setErrors((prev) => {
+                      const { end_date, ...rest } = prev;
+                      return rest;
+                    });
+                  }
+                }}
+              />
+              <Label
+                htmlFor="multi-day"
+                className="text-sm cursor-pointer select-none"
+              >
+                Multi-Day
+              </Label>
+            </div>
+          </div>
         </div>
 
-        {/* Start Date & Time */}
-        <Field>
-          <FieldLabel className="text-sm font-medium">
-            Start Date & Time
-          </FieldLabel>
-          <div className="flex gap-3">
-            {/* Start Date Picker */}
-            <div className="flex-1">
-              <Popover
-                open={startDatePickerOpen}
-                onOpenChange={setStartDatePickerOpen}
-              >
-                <PopoverTrigger asChild>
-                  <Button
-                    variant="outline"
-                    className={cn(
-                      "w-full justify-start text-left font-normal",
-                      !formData.start_date && "text-muted-foreground",
-                      errors.start_date && "border-destructive"
-                    )}
-                  >
-                    <CalendarIcon className="mr-2 h-4 w-4" />
-                    {formData.start_date
-                      ? formData.start_date.toLocaleDateString()
-                      : "Select date"}
-                  </Button>
-                </PopoverTrigger>
-                <PopoverContent className="w-auto p-0" align="start">
-                  <Calendar
-                    mode="single"
-                    selected={formData.start_date || undefined}
-                    onSelect={(date) => {
-                      setFormData((prev) => ({
-                        ...prev,
-                        start_date: date || null,
-                      }));
-                      setStartDatePickerOpen(false);
-                      if (errors.start_date)
-                        setErrors((prev) => ({ ...prev, start_date: "" }));
-                    }}
-                    autoFocus
-                  />
-                </PopoverContent>
-              </Popover>
-            </div>
-
-            {/* Start Time Picker */}
-            {!allDay && (
-              <div className="flex-1">
+        {/* Date & Time Fields */}
+        {!multiDay && !allDay ? (
+          // Single-day timed event
+          <Field>
+            <FieldLabel className="text-sm font-medium">Date & Time</FieldLabel>
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+              <div className="col-span-2">
+                <Popover
+                  open={startDatePickerOpen}
+                  onOpenChange={setStartDatePickerOpen}
+                >
+                  <PopoverTrigger asChild>
+                    <Button
+                      variant="outline"
+                      className={cn(
+                        "w-full justify-start text-left font-normal",
+                        !formData.start_date && "text-muted-foreground",
+                        errors.start_date && "border-destructive"
+                      )}
+                    >
+                      <CalendarIcon className="mr-2 h-4 w-4" />
+                      {formData.start_date
+                        ? formData.start_date.toLocaleDateString()
+                        : "Select date"}
+                    </Button>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-auto p-0" align="start">
+                    <Calendar
+                      mode="single"
+                      selected={formData.start_date || undefined}
+                      onSelect={(date) => {
+                        setFormData((prev) => ({
+                          ...prev,
+                          start_date: date || null,
+                        }));
+                        setStartDatePickerOpen(false);
+                        if (errors.start_date)
+                          setErrors((prev) => ({ ...prev, start_date: "" }));
+                      }}
+                      autoFocus
+                    />
+                  </PopoverContent>
+                </Popover>
+              </div>
+              <div className="col-span-1">
                 <Input
                   type="time"
                   value={startTime}
-                  onChange={(e) => setStartTime(e.target.value)}
-                  className="bg-background appearance-none [&::-webkit-calendar-picker-indicator]:hidden [&::-webkit-calendar-picker-indicator]:appearance-none"
+                  onChange={(e) => {
+                    setStartTime(e.target.value);
+                    if (errors.end_time)
+                      setErrors((prev) => ({ ...prev, end_time: "" }));
+                  }}
+                  className="bg-background"
                 />
               </div>
-            )}
-          </div>
-          {errors.start_date && <FieldError>{errors.start_date}</FieldError>}
-        </Field>
-
-        {/* End Date & Time */}
-        <Field>
-          <FieldLabel className="text-sm font-medium">
-            End Date & Time
-          </FieldLabel>
-          <div className="flex gap-3">
-            {/* End Date Picker */}
-            <div className="flex-1">
-              <Popover
-                open={endDatePickerOpen}
-                onOpenChange={setEndDatePickerOpen}
-              >
-                <PopoverTrigger asChild>
-                  <Button
-                    variant="outline"
-                    className={cn(
-                      "w-full justify-start text-left font-normal",
-                      !formData.end_date && "text-muted-foreground",
-                      errors.end_date && "border-destructive"
-                    )}
-                  >
-                    <CalendarIcon className="mr-2 h-4 w-4" />
-                    {formData.end_date
-                      ? formData.end_date.toLocaleDateString()
-                      : "Select date"}
-                  </Button>
-                </PopoverTrigger>
-                <PopoverContent className="w-auto p-0" align="start">
-                  <Calendar
-                    mode="single"
-                    selected={formData.end_date || undefined}
-                    onSelect={(date) => {
-                      setFormData((prev) => ({
-                        ...prev,
-                        end_date: date || null,
-                      }));
-                      setEndDatePickerOpen(false);
-                      if (errors.end_date)
-                        setErrors((prev) => ({ ...prev, end_date: "" }));
-                    }}
-                    autoFocus
-                  />
-                </PopoverContent>
-              </Popover>
-            </div>
-
-            {/* End Time Picker */}
-            {!allDay && (
-              <div className="flex-1">
+              <div className="col-span-1">
                 <Input
                   type="time"
                   value={endTime}
-                  onChange={(e) => setEndTime(e.target.value)}
-                  className="bg-background appearance-none [&::-webkit-calendar-picker-indicator]:hidden [&::-webkit-calendar-picker-indicator]:appearance-none"
+                  onChange={(e) => {
+                    setEndTime(e.target.value);
+                    if (errors.end_time)
+                      setErrors((prev) => ({ ...prev, end_time: "" }));
+                  }}
+                  className="bg-background"
                 />
               </div>
+            </div>
+            {errors.start_date && <FieldError>{errors.start_date}</FieldError>}
+            {errors.end_time && <FieldError>{errors.end_time}</FieldError>}
+          </Field>
+        ) : (
+          <>
+            {/* Start Date & Time */}
+            <Field>
+              <FieldLabel className="text-sm font-medium">
+                Start Date{!allDay && " & Time"}
+              </FieldLabel>
+              <div className="flex flex-col sm:flex-row gap-3">
+                <div className="flex-1">
+                  <Popover
+                    open={startDatePickerOpen}
+                    onOpenChange={setStartDatePickerOpen}
+                  >
+                    <PopoverTrigger asChild>
+                      <Button
+                        variant="outline"
+                        className={cn(
+                          "w-full justify-start text-left font-normal",
+                          !formData.start_date && "text-muted-foreground",
+                          errors.start_date && "border-destructive"
+                        )}
+                      >
+                        <CalendarIcon className="mr-2 h-4 w-4" />
+                        {formData.start_date
+                          ? formData.start_date.toLocaleDateString()
+                          : "Select date"}
+                      </Button>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-auto p-0" align="start">
+                      <Calendar
+                        mode="single"
+                        selected={formData.start_date || undefined}
+                        onSelect={(date) => {
+                          setFormData((prev) => ({
+                            ...prev,
+                            start_date: date || null,
+                          }));
+                          setStartDatePickerOpen(false);
+                          if (errors.start_date)
+                            setErrors((prev) => ({ ...prev, start_date: "" }));
+                        }}
+                        autoFocus
+                      />
+                    </PopoverContent>
+                  </Popover>
+                </div>
+                {!allDay && (
+                  <div className="flex-1">
+                    <Input
+                      type="time"
+                      value={startTime}
+                      onChange={(e) => {
+                        setStartTime(e.target.value);
+                        if (errors.end_time)
+                          setErrors((prev) => ({ ...prev, end_time: "" }));
+                      }}
+                      className="bg-background"
+                    />
+                  </div>
+                )}
+              </div>
+              {errors.start_date && (
+                <FieldError>{errors.start_date}</FieldError>
+              )}
+            </Field>
+
+            {/* End Date & Time (multi-day only) */}
+            {multiDay && (
+              <Field>
+                <FieldLabel className="text-sm font-medium">
+                  End Date{!allDay && " & Time"}
+                </FieldLabel>
+                <div className="flex flex-col sm:flex-row gap-3">
+                  <div className="flex-1">
+                    <Popover
+                      open={endDatePickerOpen}
+                      onOpenChange={setEndDatePickerOpen}
+                    >
+                      <PopoverTrigger asChild>
+                        <Button
+                          variant="outline"
+                          className={cn(
+                            "w-full justify-start text-left font-normal",
+                            !formData.end_date && "text-muted-foreground",
+                            errors.end_date && "border-destructive"
+                          )}
+                        >
+                          <CalendarIcon className="mr-2 h-4 w-4" />
+                          {formData.end_date
+                            ? formData.end_date.toLocaleDateString()
+                            : "Select date"}
+                        </Button>
+                      </PopoverTrigger>
+                      <PopoverContent className="w-auto p-0" align="start">
+                        <Calendar
+                          mode="single"
+                          selected={formData.end_date || undefined}
+                          onSelect={(date) => {
+                            setFormData((prev) => ({
+                              ...prev,
+                              end_date: date || null,
+                            }));
+                            setEndDatePickerOpen(false);
+                            if (errors.end_date)
+                              setErrors((prev) => ({ ...prev, end_date: "" }));
+                          }}
+                          autoFocus
+                        />
+                      </PopoverContent>
+                    </Popover>
+                  </div>
+                  {!allDay && (
+                    <div className="flex-1">
+                      <Input
+                        type="time"
+                        value={endTime}
+                        onChange={(e) => {
+                          setEndTime(e.target.value);
+                          if (errors.end_time)
+                            setErrors((prev) => ({ ...prev, end_time: "" }));
+                        }}
+                        className="bg-background"
+                      />
+                    </div>
+                  )}
+                </div>
+                {errors.end_date && <FieldError>{errors.end_date}</FieldError>}
+              </Field>
             )}
-          </div>
-          {errors.end_date && <FieldError>{errors.end_date}</FieldError>}
-        </Field>
+          </>
+        )}
 
         {/* Buttons */}
-        <div className="flex gap-2 pt-2">
+        <div className="flex flex-col-reverse sm:flex-row gap-3 pt-4">
+          <Button
+            variant="outline"
+            type="button"
+            className="cursor-pointer sm:w-auto"
+            onClick={onCancel}
+            disabled={loading}
+          >
+            Cancel
+          </Button>
           <Button
             type="submit"
             className="flex-1 cursor-pointer"
@@ -391,15 +520,6 @@ export function EventForm({ onSubmitSuccess, onCancel }: IProps) {
             ) : (
               "Create Event"
             )}
-          </Button>
-          <Button
-            variant="outline"
-            type="button"
-            className="cursor-pointer"
-            onClick={onCancel}
-            disabled={loading}
-          >
-            Cancel
           </Button>
         </div>
       </FieldGroup>

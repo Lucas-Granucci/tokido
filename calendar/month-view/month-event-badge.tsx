@@ -5,7 +5,7 @@ import { cn } from "@/lib/utils";
 
 import type { Event } from "../interfaces";
 import type { VariantProps } from "class-variance-authority";
-import { getEventBadgeClasses } from "@/utils/config-utils";
+import { getCategoryColor, getEventBadgeClasses } from "@/utils/config-utils";
 
 const eventBadgeVariants = cva(
   "mx-1 flex size-auto h-6.5 select-none items-center justify-between gap-1.5 truncate whitespace-nowrap rounded-md border px-2 text-xs focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring",
@@ -47,6 +47,15 @@ export function MonthEventBadge({
   const itemStart = startOfDay(parseISO(event.start_date));
   const itemEnd = endOfDay(parseISO(event.end_date));
 
+  // Check for all-day event (00:00 to 23:59)
+  const originalStart = parseISO(event.start_date);
+  const originalEnd = parseISO(event.end_date);
+  const isAllDay =
+    originalStart.getHours() === 0 &&
+    originalStart.getMinutes() === 0 &&
+    originalEnd.getHours() === 23 &&
+    originalEnd.getMinutes() === 59;
+
   if (cellDate < itemStart || cellDate > itemEnd) return null;
 
   let position: "first" | "middle" | "last" | "none" | undefined;
@@ -70,6 +79,7 @@ export function MonthEventBadge({
   const eventBadgeClasses = cn(
     eventBadgeVariants({ multiDayPosition: position }),
     getEventBadgeClasses(event.category),
+    isAllDay && "font-medium",
     className
   );
 
@@ -80,16 +90,23 @@ export function MonthEventBadge({
     }
   };
 
+  const badgeStyle = isAllDay
+    ? {
+        borderColor: getCategoryColor(event.category),
+      }
+    : undefined;
+
   return (
     <div>
       <div
         role="button"
         tabIndex={0}
         className={eventBadgeClasses}
+        style={badgeStyle}
         onKeyDown={handleKeyDown}
       >
         <div className="flex items-center gap-1.5 truncate">
-          {!["middle", "last"].includes(position) && (
+          {!["middle", "last"].includes(position) && !isAllDay && (
             <svg
               width="8"
               height="8"
@@ -112,7 +129,7 @@ export function MonthEventBadge({
           )}
         </div>
 
-        {renderBadgeText && (
+        {renderBadgeText && !isAllDay && (
           <span>{format(new Date(event.start_date), "h:mm a")}</span>
         )}
       </div>
