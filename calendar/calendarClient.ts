@@ -44,6 +44,29 @@ export const calendarClient = {
     return data;
   },
 
+  // update existing event
+  async editEvent(eventId: string, eventData: EventFormData): Promise<Event> {
+    const { user } = await getCurrentUserClient();
+    if (!user) throw new Error("Not authenticated");
+
+    const { data, error } = await supabase
+      .from("events")
+      .update({
+        name: eventData.name,
+        category: eventData.category,
+        description: eventData.description,
+        start_date: eventData.start_date,
+        end_date: eventData.end_date,
+      })
+      .eq("id", eventId)
+      .eq("user_id", user.id)
+      .select()
+      .single();
+
+    if (error) throw error;
+    return data;
+  },
+
   // delete event by id
   async deleteEvent(eventId: string): Promise<void> {
     const { user } = await getCurrentUserClient();

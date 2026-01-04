@@ -6,6 +6,7 @@ import { cn } from "@/lib/utils";
 import type { Event } from "../interfaces";
 import type { VariantProps } from "class-variance-authority";
 import { getCategoryColor, getEventBadgeClasses } from "@/utils/config-utils";
+import { EventDetailsDialog } from "../dialogs/event-details-dialog";
 
 const eventBadgeVariants = cva(
   "mx-1 flex size-auto h-6.5 select-none items-center justify-between gap-1.5 truncate whitespace-nowrap rounded-md border px-2 text-xs focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring",
@@ -97,42 +98,44 @@ export function MonthEventBadge({
     : undefined;
 
   return (
-    <div>
-      <div
-        role="button"
-        tabIndex={0}
-        className={eventBadgeClasses}
-        style={badgeStyle}
-        onKeyDown={handleKeyDown}
-      >
-        <div className="flex items-center gap-1.5 truncate">
-          {!["middle", "last"].includes(position) && !isAllDay && (
-            <svg
-              width="8"
-              height="8"
-              viewBox="0 0 8 8"
-              className="event-dot shrink-0"
-            >
-              <circle cx="4" cy="4" r="4" />
-            </svg>
-          )}
+    <EventDetailsDialog event={event}>
+      <div className="cursor-pointer">
+        <div
+          role="button"
+          tabIndex={0}
+          className={eventBadgeClasses}
+          style={badgeStyle}
+          onKeyDown={handleKeyDown}
+        >
+          <div className="flex items-center gap-1.5 truncate">
+            {!["middle", "last"].includes(position) && !isAllDay && (
+              <svg
+                width="8"
+                height="8"
+                viewBox="0 0 8 8"
+                className="event-dot shrink-0"
+              >
+                <circle cx="4" cy="4" r="4" />
+              </svg>
+            )}
 
-          {renderBadgeText && (
-            <p className="flex-1 truncate font-semibold">
-              {eventCurrentDay && (
-                <span className="text-xs">
-                  Day {eventCurrentDay} of {eventTotalDays} •{" "}
-                </span>
-              )}
-              {event.name}
-            </p>
+            {renderBadgeText && (
+              <p className="flex-1 truncate font-semibold">
+                {eventCurrentDay && (
+                  <span className="text-xs">
+                    Day {eventCurrentDay} of {eventTotalDays} •{" "}
+                  </span>
+                )}
+                {event.name}
+              </p>
+            )}
+          </div>
+
+          {renderBadgeText && !isAllDay && (
+            <span>{format(new Date(event.start_date), "h:mm a")}</span>
           )}
         </div>
-
-        {renderBadgeText && !isAllDay && (
-          <span>{format(new Date(event.start_date), "h:mm a")}</span>
-        )}
       </div>
-    </div>
+    </EventDetailsDialog>
   );
 }
