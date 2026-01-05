@@ -134,7 +134,7 @@ export function TaskForm({ onSubmitSuccess, onCancel }: TaskFormProps) {
         </Field>
 
         {/* Grid Fields */}
-        <div className="grid grid-cols-2 gap-3">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
           {/* Category Field */}
           <Field>
             <FieldLabel
@@ -208,7 +208,7 @@ export function TaskForm({ onSubmitSuccess, onCancel }: TaskFormProps) {
           </Field>
         </div>
 
-        <div className="grid grid-cols-2 gap-3">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
           {/* Duration Field */}
           <Field>
             <FieldLabel className="text-sm font-medium">Duration</FieldLabel>

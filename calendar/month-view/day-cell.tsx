@@ -5,6 +5,7 @@ import { getMonthCellEvents } from "../calendar-utils";
 import { cn } from "@/lib/utils";
 import { isToday, startOfDay } from "date-fns";
 import { MonthEventBadge } from "./month-event-badge";
+import { getCategoryColor } from "@/utils/config-utils";
 
 interface IProps {
   cell: CalendarCell;
@@ -46,7 +47,7 @@ export function DayCell({ cell, events, eventPositions }: IProps) {
 
         <div
           className={cn(
-            "flex h-6 gap-1 px-2 lg:flex-1 lg:flex-col lg:px-0",
+            "flex h-6 gap-1 px-2 items-center lg:items-stretch lg:flex-1 lg:flex-col lg:px-0",
             !currentMonth && "opacity-50"
           )}
         >
@@ -63,7 +64,12 @@ export function DayCell({ cell, events, eventPositions }: IProps) {
               >
                 {event && (
                   <>
-                    {/* <EventBullet className="lg:hidden" /> */}
+                    <div
+                      className="size-1.5 rounded-full lg:hidden shrink-0"
+                      style={{
+                        backgroundColor: getCategoryColor(event.category),
+                      }}
+                    />
                     <MonthEventBadge
                       className="hidden lg:flex"
                       event={event}

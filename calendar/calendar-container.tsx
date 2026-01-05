@@ -3,6 +3,7 @@ import type { CalendarViewOption, Event } from "./interfaces";
 import { isSameDay, parseISO } from "date-fns";
 import { useEvents } from "@/contexts/events-context";
 import { CalendarMonthView } from "./month-view/calendar-month-view";
+import { CalendarYearView } from "./year-view/calendar-year-view";
 
 interface CalendarViewProps {
   events: Event[];
@@ -89,6 +90,13 @@ export function CalendarContainer({ events, viewOption }: CalendarViewProps) {
     return !isSameDay(startDate, endDate);
   });
 
+  const eventStartDates = useMemo(() => {
+    return filteredEvents.map((event) => ({
+      ...event,
+      endDate: event.start_date,
+    }));
+  }, [filteredEvents]);
+
   return (
     <div className="h-full">
       {viewOption.value === "month" && (
@@ -96,6 +104,9 @@ export function CalendarContainer({ events, viewOption }: CalendarViewProps) {
           singleDayEvents={singleDayEvents}
           multiDayEvents={multiDayEvents}
         />
+      )}
+      {viewOption.value === "year" && (
+        <CalendarYearView allEvents={eventStartDates} />
       )}
     </div>
   );
