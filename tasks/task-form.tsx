@@ -300,6 +300,15 @@ export function TaskForm({ onSubmitSuccess, onCancel }: TaskFormProps) {
         {/* Buttons */}
         <div className="flex gap-2 pt-2">
           <Button
+            variant="outline"
+            type="button"
+            className="cursor-pointer"
+            onClick={onCancel}
+            disabled={loading}
+          >
+            Cancel
+          </Button>
+          <Button
             type="submit"
             className="flex-1 cursor-pointer"
             disabled={loading}
@@ -312,15 +321,6 @@ export function TaskForm({ onSubmitSuccess, onCancel }: TaskFormProps) {
             ) : (
               "Create Task"
             )}
-          </Button>
-          <Button
-            variant="outline"
-            type="button"
-            className="cursor-pointer"
-            onClick={onCancel}
-            disabled={loading}
-          >
-            Cancel
           </Button>
         </div>
       </FieldGroup>

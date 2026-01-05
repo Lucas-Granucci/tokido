@@ -40,7 +40,7 @@ interface IProps {
 export function EventForm({ onSubmitSuccess, onCancel }: IProps) {
   const [startDatePickerOpen, setStartDatePickerOpen] = useState(false);
   const [endDatePickerOpen, setEndDatePickerOpen] = useState(false);
-  const [allDay, setAllDay] = useState(false);
+  const [allDay, setAllDay] = useState(true);
   const [multiDay, setMultiDay] = useState(false);
   const [formData, setFormData] = useState<EventFormData>({
     name: "",

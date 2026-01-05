@@ -7,6 +7,7 @@ import { TasksProvider } from "@/contexts/tasks-context";
 import { UserProvider } from "@/contexts/user-context";
 import { AuthGuard } from "@/components/auth/auth-guard";
 import { CreateDialog } from "@/components/layout/create-dialog";
+import { MobileNav } from "@/components/layout/mobile-nav";
 import { CreateDialogProvider } from "@/contexts/create-dialog-context";
 import { EventsProvider } from "@/contexts/events-context";
 
@@ -34,9 +35,10 @@ export default async function RootLayout({ children }: RootLayoutProps) {
                 <EventsProvider>
                   <CreateDialogProvider>
                     <AppSidebar />
-                    <main className="flex-1 overflow-y-auto p-6">
+                    <main className="flex-1 overflow-y-auto p-6 pb-24 md:pb-6">
                       {children}
                     </main>
+                    <MobileNav />
                     <CreateDialog />
                   </CreateDialogProvider>
                 </EventsProvider>
