@@ -17,7 +17,7 @@ interface TaskListProps {
 export default function TaskList({ group }: TaskListProps) {
   const { openCreateDialog } = useCreateDialog();
   return (
-    <Card>
+    <Card className="shadow-none">
       <CardHeader className="flex flex-row items-center justify-between">
         <div className="flex items-center space-x-2">
           <CardTitle>{group.label}</CardTitle>

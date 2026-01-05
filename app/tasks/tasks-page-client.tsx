@@ -22,7 +22,7 @@ export default function TasksPageClient() {
 
   return (
     <div className="space-y-2">
-      <h1 className="text-3xl font-bold">Tasks</h1>
+      <h1 className="text-3xl font-bold hidden md:block">Tasks</h1>
 
       <Tabs defaultValue="priority" className="w-full">
         <TabsList className="w-full">

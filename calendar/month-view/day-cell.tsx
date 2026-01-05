@@ -11,11 +11,19 @@ interface IProps {
   cell: CalendarCell;
   events: Event[];
   eventPositions: Record<string, number>;
+  isLastColumn?: boolean;
+  isLastRow?: boolean;
 }
 
 const MAX_VISIBLE_EVENTS = 3;
 
-export function DayCell({ cell, events, eventPositions }: IProps) {
+export function DayCell({
+  cell,
+  events,
+  eventPositions,
+  isLastColumn,
+  isLastRow,
+}: IProps) {
   const { setSelectedDate } = useEvents();
   const { day, currentMonth, date } = cell;
 
@@ -32,11 +40,17 @@ export function DayCell({ cell, events, eventPositions }: IProps) {
 
   return (
     <div className="h-full">
-      <div className="flex h-full flex-col gap-0.5 border py-1 lg:pb-1 lg:pt-0.5">
+      <div
+        className={cn(
+          "flex h-full flex-col gap-0.5 py-1 lg:pb-1 lg:pt-0.5",
+          !isLastColumn && "border-r",
+          !isLastRow && "border-b"
+        )}
+      >
         <button
           onClick={handleClick}
           className={cn(
-            "flex size-6 translate-x-1 items-center justify-center rounded-full text-xs font-semibold hover:bg-accent focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring lg:px-2 cursor-pointer",
+            "flex size-6 ml-0.5 items-center justify-center rounded-full text-xs font-semibold hover:bg-accent focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring lg:px-2 cursor-pointer",
             !currentMonth && "opacity-20",
             isToday(date) &&
               "bg-primary font-bold text-primary-foreground hover:bg-primary"
