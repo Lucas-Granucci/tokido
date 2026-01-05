@@ -4,6 +4,7 @@ import { isSameDay, parseISO } from "date-fns";
 import { useEvents } from "@/contexts/events-context";
 import { CalendarMonthView } from "./month-view/calendar-month-view";
 import { CalendarYearView } from "./year-view/calendar-year-view";
+import { CalendarAgendaView } from "./agenda-view/calendar-agenda-view";
 
 interface CalendarViewProps {
   events: Event[];
@@ -107,6 +108,12 @@ export function CalendarContainer({ events, viewOption }: CalendarViewProps) {
       )}
       {viewOption.value === "year" && (
         <CalendarYearView allEvents={eventStartDates} />
+      )}
+      {viewOption.value === "agenda" && (
+        <CalendarAgendaView
+          singleDayEvents={singleDayEvents}
+          multiDayEvents={multiDayEvents}
+        />
       )}
     </div>
   );
