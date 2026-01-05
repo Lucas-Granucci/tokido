@@ -20,7 +20,7 @@ export function TasksContainer({ tasks, viewOption }: TasksContainerProps) {
   }));
 
   return (
-    <div>
+    <div className="h-full">
       <div
         className="grid gap-6"
         style={{

@@ -5,6 +5,7 @@ import { Calendar, Clock, Flag, Folder, Plus } from "lucide-react";
 import { TasksContainer } from "@/tasks/tasks-container";
 import { useTasks } from "@/contexts/tasks-context";
 import { TaskCategory } from "@/tasks/interfaces";
+import { Separator } from "@/components/ui/separator";
 
 export default function TasksPageClient() {
   const { tasks, loading } = useTasks();
@@ -21,37 +22,39 @@ export default function TasksPageClient() {
   }
 
   return (
-    <div className="space-y-2">
-      <h1 className="text-3xl font-bold hidden md:block">Tasks</h1>
-
-      <Tabs defaultValue="priority" className="w-full">
-        <TabsList className="w-full">
-          {TaskCategories.map((item) => (
-            <TabsTrigger
-              value={item.value}
-              key={item.value}
-              className="w-full justify-center gap-2"
-            >
-              <item.icon className="h-4 w-4" />
-              <span>{item.title}</span>
-            </TabsTrigger>
-          ))}
-        </TabsList>
-
-        {TaskCategories.map((item) => (
-          <TabsContent value={item.value} key={item.value}>
-            <TasksContainer tasks={tasks} viewOption={item.value} />
-          </TabsContent>
-        ))}
+    <div className="flex flex-col h-full gap-4">
+      <Tabs defaultValue="priority" className="w-full flex-1 flex flex-col">
+        <div className="flex-1 rounded-lg border bg-background flex flex-col overflow-hidden">
+          <div className="p-4">
+            <div className="flex flex-col md:flex-row items-center justify-between gap-4 md:gap-0">
+              <TabsList className="flex w-full h-10 md:h-9">
+                {TaskCategories.map((item) => (
+                  <TabsTrigger
+                    value={item.value}
+                    key={item.value}
+                    className="flex-1 justify-center gap-2"
+                  >
+                    <item.icon className="h-4 w-4" />
+                    <span className="hidden sm:inline">{item.title}</span>
+                  </TabsTrigger>
+                ))}
+              </TabsList>
+            </div>
+          </div>
+          <Separator />
+          <div className="flex-1 overflow-auto p-4">
+            {TaskCategories.map((item) => (
+              <TabsContent
+                value={item.value}
+                key={item.value}
+                className="h-full m-0 p-0"
+              >
+                <TasksContainer tasks={tasks} viewOption={item.value} />
+              </TabsContent>
+            ))}
+          </div>
+        </div>
       </Tabs>
-
-      {/* FAB that sticks to content */}
-      {/* <div className="fixed bottom-8 right-8">
-        <Button className="h-12 w-12 rounded-full shadow-lg gap-0" size="icon">
-          <Plus className="h-6 w-6" />
-          <span className="sr-only">New Task</span>
-        </Button>
-      </div> */}
     </div>
   );
 }

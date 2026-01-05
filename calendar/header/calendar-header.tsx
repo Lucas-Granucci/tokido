@@ -13,9 +13,11 @@ interface IProps {
 export function CalendarHeader({ views, activeView }: IProps) {
   return (
     <div className="flex flex-col md:flex-row items-center justify-between gap-4 md:gap-0">
-      <div className="flex items-center w-full md:w-auto gap-3 justify-start">
-        <TodayButton />
-        <DateNavigator view={activeView} />
+      <div className="flex items-center w-full md:w-auto gap-4 justify-start">
+        <div className="flex items-center gap-3">
+          <TodayButton />
+          <DateNavigator view={activeView} />
+        </div>
       </div>
 
       <TabsList className="flex w-full md:w-auto h-10 md:h-9">

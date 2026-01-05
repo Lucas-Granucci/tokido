@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import {
   Calendar,
   Home,
@@ -37,6 +38,7 @@ const navItems = [
 export function AppSidebar() {
   const { open, toggleSidebar } = useSidebar();
   const { openCreateDialog } = useCreateDialog();
+  const pathname = usePathname();
 
   return (
     <Sidebar collapsible="icon">
@@ -91,7 +93,11 @@ export function AppSidebar() {
           <SidebarMenu>
             {navItems.map((item) => (
               <SidebarMenuItem key={item.title}>
-                <SidebarMenuButton asChild>
+                <SidebarMenuButton
+                  asChild
+                  isActive={pathname === item.url}
+                  className="data-[active=true]:bg-primary data-[active=true]:text-primary-foreground"
+                >
                   <Link href={item.url}>
                     <item.icon />
                     <span>{item.title}</span>

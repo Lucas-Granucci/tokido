@@ -33,8 +33,6 @@ export default function CalendarPageClient() {
 
   return (
     <div className="flex flex-col h-full gap-4">
-      <h1 className="text-3xl font-bold hidden md:block">Calendar</h1>
-
       <Tabs
         defaultValue="month"
         className="w-full flex-1 flex flex-col"
