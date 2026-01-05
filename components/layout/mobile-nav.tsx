@@ -20,7 +20,7 @@ export function MobileNav() {
 
   return (
     <div className="fixed bottom-0 left-0 right-0 z-50 border-t bg-background md:hidden pb-[env(safe-area-inset-bottom)]">
-      <div className="flex h-16 items-center justify-around px-2">
+      <div className="grid h-16 grid-cols-5 items-center">
         {navItems.map((item) => {
           const isActive = item.url ? pathname === item.url : false;
 
