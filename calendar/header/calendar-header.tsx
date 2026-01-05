@@ -16,7 +16,7 @@ export function CalendarHeader({ views, activeView }: IProps) {
       <h1 className="text-3xl font-bold hidden md:block">Calendar</h1>
 
       <div className="flex flex-col md:flex-row items-center justify-between p-2 rounded-lg border gap-4 md:gap-0 bg-background">
-        <div className="flex items-center w-full md:w-auto gap-3 justify-between md:justify-start">
+        <div className="flex items-center w-full md:w-auto gap-3 justify-start">
           <TodayButton />
           <DateNavigator view={activeView} />
         </div>

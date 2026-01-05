@@ -38,9 +38,11 @@ export function DateNavigator({ view }: DateNavigatorProps) {
           <ChevronLeft />
         </Button>
 
-        <p className="text-sm text-muted-foreground">
-          {rangeText(view, selectedDate)}
-        </p>
+        <div className="grid w-48 place-items-center">
+          <p className="truncate text-sm text-muted-foreground">
+            {rangeText(view, selectedDate)}
+          </p>
+        </div>
 
         <Button
           variant="outline"
