@@ -30,12 +30,12 @@ export function DayCell({ cell, events, eventPositions }: IProps) {
   };
 
   return (
-    <div>
-      <div className="flex h-full flex-col gap-1 border py-1.5 lg:pb-2 lg:pt-1">
+    <div className="h-full">
+      <div className="flex h-full flex-col gap-0.5 border py-1 lg:pb-1 lg:pt-0.5">
         <button
           onClick={handleClick}
           className={cn(
-            "flex size-6 translate-x-1 items-center justify-center rounded-full text-xs font-semibold hover:bg-accent focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring lg:px-2",
+            "flex size-6 translate-x-1 items-center justify-center rounded-full text-xs font-semibold hover:bg-accent focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring lg:px-2 cursor-pointer",
             !currentMonth && "opacity-20",
             isToday(date) &&
               "bg-primary font-bold text-primary-foreground hover:bg-primary"
@@ -46,7 +46,7 @@ export function DayCell({ cell, events, eventPositions }: IProps) {
 
         <div
           className={cn(
-            "flex h-6 gap-1 px-2 lg:h-[94px] lg:flex-col lg:gap-2 lg:px-0",
+            "flex h-6 gap-1 px-2 lg:flex-1 lg:flex-col lg:px-0",
             !currentMonth && "opacity-50"
           )}
         >
@@ -57,7 +57,10 @@ export function DayCell({ cell, events, eventPositions }: IProps) {
               : `empty-${position}`;
 
             return (
-              <div key={eventKey} className="lg:flex-1">
+              <div
+                key={eventKey}
+                className={cn(!event && "hidden h-6.5 lg:block")}
+              >
                 {event && (
                   <>
                     {/* <EventBullet className="lg:hidden" /> */}

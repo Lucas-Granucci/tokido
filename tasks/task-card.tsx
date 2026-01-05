@@ -83,6 +83,7 @@ export default function TaskCard({ task }: IProps) {
                   variant="ghost"
                   size="icon-sm"
                   onClick={handleDelete}
+                  className="cursor-pointer"
                 >
                   <X />
                 </Button>

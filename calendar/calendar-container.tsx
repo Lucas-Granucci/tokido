@@ -90,7 +90,7 @@ export function CalendarContainer({ events, viewOption }: CalendarViewProps) {
   });
 
   return (
-    <div>
+    <div className="h-full">
       {viewOption.value === "month" && (
         <CalendarMonthView
           singleDayEvents={singleDayEvents}

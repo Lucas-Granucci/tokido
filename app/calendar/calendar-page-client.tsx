@@ -33,7 +33,7 @@ export default function CalendarPageClient() {
   return (
     <Tabs
       defaultValue="month"
-      className="w-full"
+      className="w-full h-full"
       onValueChange={handleViewChange}
     >
       <CalendarHeader views={CalendarViews} activeView={activeView} />

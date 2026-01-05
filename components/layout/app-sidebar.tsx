@@ -49,7 +49,7 @@ export function AppSidebar() {
             asChild
           >
             <div>
-              <button className="flex aspect-square size-8 items-center justify-center rounded-lg">
+              <button className="flex aspect-square size-8 items-center justify-center rounded-lg cursor-pointer">
                 {open ? (
                   <Layers className="size-5" />
                 ) : (
@@ -78,7 +78,7 @@ export function AppSidebar() {
               asChild
             >
               <div>
-                <button className="flex aspect-square size-8 items-center justify-center rounded-lg">
+                <button className="flex aspect-square size-8 items-center justify-center rounded-lg cursor-pointer">
                   <Plus className="size-5" />
                 </button>
                 <span className="text-lg font-semibold">Create</span>

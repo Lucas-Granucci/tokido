@@ -115,7 +115,7 @@ export function getCalendarCells(selectedDate: Date): CalendarCell[] {
   }));
 
   const nextMonthCells = Array.from(
-    { length: 7 - ((totalDays % 7) % 7) },
+    { length: (7 - (totalDays % 7)) % 7 },
     (_, i) => ({
       day: i + 1,
       currentMonth: false,
