@@ -27,7 +27,7 @@ export default async function RootLayout({ children }: RootLayoutProps) {
 
   return (
     <html lang="en">
-      <body className="flex h-screen bg-muted/30 text-foreground">
+      <body className="flex h-screen overflow-hidden bg-muted/30 text-foreground">
         <UserProvider initialUser={user}>
           <AuthGuard>
             <SidebarProvider>
@@ -35,7 +35,7 @@ export default async function RootLayout({ children }: RootLayoutProps) {
                 <EventsProvider>
                   <CreateDialogProvider>
                     <AppSidebar />
-                    <main className="flex-1 overflow-y-auto p-6 pb-24 md:pb-6">
+                    <main className="flex flex-1 flex-col overflow-hidden p-6 pb-24 md:pb-6 min-h-0">
                       {children}
                     </main>
                     <MobileNav />

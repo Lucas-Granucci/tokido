@@ -5,6 +5,7 @@ import { useEvents } from "@/contexts/events-context";
 import { CalendarMonthView } from "./month-view/calendar-month-view";
 import { CalendarYearView } from "./year-view/calendar-year-view";
 import { CalendarAgendaView } from "./agenda-view/calendar-agenda-view";
+import { ScrollArea } from "@/components/ui/scroll-area";
 
 interface CalendarViewProps {
   events: Event[];
@@ -99,22 +100,24 @@ export function CalendarContainer({ events, viewOption }: CalendarViewProps) {
   }, [filteredEvents]);
 
   return (
-    <div className="h-full">
-      {viewOption.value === "month" && (
-        <CalendarMonthView
-          singleDayEvents={singleDayEvents}
-          multiDayEvents={multiDayEvents}
-        />
-      )}
-      {viewOption.value === "year" && (
-        <CalendarYearView allEvents={eventStartDates} />
-      )}
-      {viewOption.value === "agenda" && (
-        <CalendarAgendaView
-          singleDayEvents={singleDayEvents}
-          multiDayEvents={multiDayEvents}
-        />
-      )}
-    </div>
+    <ScrollArea className="h-full" type="always">
+      <div className="h-full">
+        {viewOption.value === "month" && (
+          <CalendarMonthView
+            singleDayEvents={singleDayEvents}
+            multiDayEvents={multiDayEvents}
+          />
+        )}
+        {viewOption.value === "year" && (
+          <CalendarYearView allEvents={eventStartDates} />
+        )}
+        {viewOption.value === "agenda" && (
+          <CalendarAgendaView
+            singleDayEvents={singleDayEvents}
+            multiDayEvents={multiDayEvents}
+          />
+        )}
+      </div>
+    </ScrollArea>
   );
 }

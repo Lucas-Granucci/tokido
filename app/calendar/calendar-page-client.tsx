@@ -32,23 +32,23 @@ export default function CalendarPageClient() {
   }
 
   return (
-    <div className="flex flex-col h-full gap-4">
+    <div className="flex h-full flex-col gap-4 overflow-hidden min-h-0">
       <Tabs
         defaultValue="month"
-        className="w-full flex-1 flex flex-col"
+        className="flex w-full flex-1 flex-col overflow-hidden min-h-0"
         onValueChange={handleViewChange}
       >
-        <div className="flex-1 rounded-lg border bg-background  flex flex-col overflow-hidden">
+        <div className="flex flex-1 flex-col overflow-hidden rounded-lg border bg-background min-h-0">
           <div className="p-4">
             <CalendarHeader views={CalendarViews} activeView={activeView} />
           </div>
           <Separator />
-          <div className="flex-1 overflow-auto">
+          <div className="flex-1 overflow-hidden">
             {CalendarViews.map((item) => (
               <TabsContent
                 value={item.value}
                 key={item.value}
-                className="h-full m-0 p-0"
+                className="m-0 h-full overflow-hidden p-0"
               >
                 <CalendarContainer events={events} viewOption={item} />
               </TabsContent>

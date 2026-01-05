@@ -1,7 +1,7 @@
 "use client";
 
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Calendar, Clock, Flag, Folder, Plus } from "lucide-react";
+import { Clock, Flag, Folder } from "lucide-react";
 import { TasksContainer } from "@/tasks/tasks-container";
 import { useTasks } from "@/contexts/tasks-context";
 import { TaskCategory } from "@/tasks/interfaces";
@@ -22,9 +22,12 @@ export default function TasksPageClient() {
   }
 
   return (
-    <div className="flex flex-col h-full gap-4">
-      <Tabs defaultValue="priority" className="w-full flex-1 flex flex-col">
-        <div className="flex-1 rounded-lg border bg-background flex flex-col overflow-hidden">
+    <div className="flex h-full flex-col gap-4 overflow-hidden min-h-0">
+      <Tabs
+        defaultValue="priority"
+        className="flex w-full flex-1 flex-col overflow-hidden min-h-0"
+      >
+        <div className="flex flex-1 flex-col overflow-hidden rounded-lg border bg-background min-h-0">
           <div className="p-4">
             <div className="flex flex-col md:flex-row items-center justify-between gap-4 md:gap-0">
               <TabsList className="flex w-full h-10 md:h-9">
@@ -42,12 +45,12 @@ export default function TasksPageClient() {
             </div>
           </div>
           <Separator />
-          <div className="flex-1 overflow-auto p-4">
+          <div className="flex-1 overflow-hidden">
             {TaskCategories.map((item) => (
               <TabsContent
                 value={item.value}
                 key={item.value}
-                className="h-full m-0 p-0"
+                className="m-0 h-full overflow-hidden p-0"
               >
                 <TasksContainer tasks={tasks} viewOption={item.value} />
               </TabsContent>
