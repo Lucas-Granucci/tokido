@@ -32,21 +32,21 @@ export function DateNavigator({ view }: DateNavigatorProps) {
       <div className="flex items-center gap-2">
         <Button
           variant="outline"
-          className="size-6.5 px-0 [&_svg]:size-4.5 cursor-pointer"
+          className="size-6.5 px-0 [&_svg]:size-4.5 cursor-pointer flex-none"
           onClick={handlePrevious}
         >
           <ChevronLeft />
         </Button>
 
-        <div className="grid w-48 place-items-center">
-          <p className="truncate text-sm text-muted-foreground">
+        <div className="flex flex-1 justify-center min-w-[7.5rem]">
+          <p className="truncate text-center text-sm text-muted-foreground w-full">
             {rangeText(view, selectedDate)}
           </p>
         </div>
 
         <Button
           variant="outline"
-          className="size-6.5 px-0 [&_svg]:size-4.5 cursor-pointer"
+          className="size-6.5 px-0 [&_svg]:size-4.5 cursor-pointer flex-none"
           onClick={handleNext}
         >
           <ChevronRight />

@@ -2,7 +2,7 @@ import { toast } from "sonner";
 import { useState } from "react";
 
 import { Input } from "@/components/ui/input";
-import { CalendarIcon, ChevronDownIcon, Clock } from "lucide-react";
+import { CalendarIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
 import {
@@ -113,8 +113,8 @@ export function TaskForm({ onSubmitSuccess, onCancel }: TaskFormProps) {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-4">
-      <FieldGroup>
+    <form onSubmit={handleSubmit} className="space-y-3 sm:space-y-4">
+      <FieldGroup className="gap-5 sm:gap-7">
         {/* Task Name Field */}
         <Field>
           <FieldLabel htmlFor="task-name" className="text-sm font-medium">
@@ -134,7 +134,7 @@ export function TaskForm({ onSubmitSuccess, onCancel }: TaskFormProps) {
         </Field>
 
         {/* Grid Fields */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-3">
           {/* Category Field */}
           <Field>
             <FieldLabel
@@ -208,11 +208,11 @@ export function TaskForm({ onSubmitSuccess, onCancel }: TaskFormProps) {
           </Field>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-3">
           {/* Duration Field */}
           <Field>
             <FieldLabel className="text-sm font-medium">Duration</FieldLabel>
-            <div className="flex gap-3">
+            <div className="flex gap-2 sm:gap-3">
               {/* Hours Input */}
               <div className="flex-1">
                 <div className="space-y-1">
@@ -298,7 +298,7 @@ export function TaskForm({ onSubmitSuccess, onCancel }: TaskFormProps) {
         </div>
 
         {/* Buttons */}
-        <div className="flex gap-2 pt-2">
+        <div className="flex gap-2 sm:gap-3 pt-2 sm:pt-3">
           <Button
             variant="outline"
             type="button"

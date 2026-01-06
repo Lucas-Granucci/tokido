@@ -74,7 +74,7 @@ export function CalendarAgendaView({
 
   return (
     <div className="h-full">
-      <div className="space-y-6 p-3 md:p-4">
+      <div className="space-y-4 p-2 sm:space-y-6 sm:p-3 md:p-4">
         {eventsByDay.map((dayGroup) => (
           <AgendaDayGroup
             key={format(dayGroup.date, "yyyy-MM-dd")}

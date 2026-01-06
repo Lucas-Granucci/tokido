@@ -74,23 +74,23 @@ export default function TaskCard({ task }: IProps) {
           whileHover={{ scale: 1.02 }}
           transition={{ type: "spring", stiffness: 300, damping: 25 }}
         >
-          <Card className="p-1 hover:shadow-md transition-shadow duration-200">
-            <CardContent className="pl-2 pr-0">
-              <div className="flex flex-row items-center justify-between">
-                <span className="text-sm">{task.name}</span>
+          <Card className="p-0 sm:p-1 hover:shadow-md transition-shadow duration-200">
+            <CardContent className="px-3 py-2 sm:px-4 sm:py-3">
+              <div className="flex flex-row items-center justify-between gap-2">
+                <span className="text-sm leading-tight">{task.name}</span>
                 <Button
                   ref={buttonRef}
                   variant="ghost"
                   size="icon-sm"
                   onClick={handleDelete}
-                  className="cursor-pointer"
+                  className="cursor-pointer h-8 w-8 p-0 sm:h-9 sm:w-9"
                 >
                   <X />
                 </Button>
               </div>
-              <div className="flex items-center gap-2 mb-1">
+              <div className="flex items-center gap-1.5 mb-1 sm:gap-2">
                 <Badge
-                  className="text-xs"
+                  className="text-[0.65rem] sm:text-xs"
                   style={{
                     backgroundColor: `${categoryColor}20`,
                     color: categoryColor,
@@ -99,7 +99,7 @@ export default function TaskCard({ task }: IProps) {
                   {task.category}
                 </Badge>
                 <Badge
-                  className="text-xs"
+                  className="text-[0.65rem] sm:text-xs"
                   style={{
                     backgroundColor: `${durationColor}20`,
                     color: durationColor,
@@ -108,7 +108,7 @@ export default function TaskCard({ task }: IProps) {
                   {task.duration} min
                 </Badge>
                 <Badge
-                  className="text-xs"
+                  className="text-[0.65rem] sm:text-xs"
                   style={{
                     backgroundColor: `${priorityColor}20`,
                     color: priorityColor,
@@ -117,9 +117,9 @@ export default function TaskCard({ task }: IProps) {
                   {task.priority}
                 </Badge>
               </div>
-              <span className="inline-flex items-center justify-center text-muted-foreground gap-1.5">
+              <span className="inline-flex items-center justify-center text-muted-foreground gap-1">
                 <Calendar size={14} />
-                <span className="text-xs">
+                <span className="text-xs leading-none">
                   {new Date(task.due_date).toLocaleDateString()}
                 </span>
               </span>

@@ -24,7 +24,7 @@ export function TasksContainer({ tasks, viewOption }: TasksContainerProps) {
     <div className="flex h-full flex-col overflow-hidden">
       <ScrollArea className="h-full" type="always">
         <div
-          className="grid gap-6 p-3 md:p-4"
+          className="grid gap-3 p-2 sm:gap-4 sm:p-3 md:gap-6 md:p-4"
           style={{
             gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))",
           }}

@@ -3,7 +3,7 @@ import { useState } from "react";
 
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { CalendarIcon, ChevronDownIcon } from "lucide-react";
+import { CalendarIcon } from "lucide-react";
 import { Calendar } from "@/components/ui/calendar";
 import {
   Field,
@@ -169,8 +169,8 @@ export function EventForm({ onSubmitSuccess, onCancel }: IProps) {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-4">
-      <FieldGroup>
+    <form onSubmit={handleSubmit} className="space-y-3 sm:space-y-4">
+      <FieldGroup className="gap-5 sm:gap-7">
         {/* Event Name Field */}
         <Field>
           <FieldLabel htmlFor="event-name" className="text-sm font-medium">
@@ -209,7 +209,7 @@ export function EventForm({ onSubmitSuccess, onCancel }: IProps) {
         </Field>
 
         {/* Category and Options Row */}
-        <div className="grid grid-cols-1 sm:grid-cols-[1fr_auto] gap-4 items-start">
+        <div className="grid grid-cols-1 sm:grid-cols-[1fr_auto] gap-3 sm:gap-4 items-start">
           <Field>
             <FieldLabel
               htmlFor="category-select"
@@ -245,7 +245,7 @@ export function EventForm({ onSubmitSuccess, onCancel }: IProps) {
             {errors.category && <FieldError>{errors.category}</FieldError>}
           </Field>
 
-          <div className="flex flex-wrap gap-4 pt-1 sm:pt-8">
+          <div className="flex flex-wrap gap-3 pt-0 sm:pt-6">
             <div className="flex items-center gap-2">
               <Switch
                 id="all-day"
@@ -297,7 +297,7 @@ export function EventForm({ onSubmitSuccess, onCancel }: IProps) {
           // Single-day timed event
           <Field>
             <FieldLabel className="text-sm font-medium">Date & Time</FieldLabel>
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 sm:gap-3">
               <div className="col-span-2">
                 <Popover
                   open={startDatePickerOpen}
@@ -371,7 +371,7 @@ export function EventForm({ onSubmitSuccess, onCancel }: IProps) {
               <FieldLabel className="text-sm font-medium">
                 Start Date{!allDay && " & Time"}
               </FieldLabel>
-              <div className="flex flex-col sm:flex-row gap-3">
+              <div className="flex flex-col sm:flex-row gap-2 sm:gap-3">
                 <div className="flex-1">
                   <Popover
                     open={startDatePickerOpen}
@@ -436,7 +436,7 @@ export function EventForm({ onSubmitSuccess, onCancel }: IProps) {
                 <FieldLabel className="text-sm font-medium">
                   End Date{!allDay && " & Time"}
                 </FieldLabel>
-                <div className="flex flex-col sm:flex-row gap-3">
+                <div className="flex flex-col sm:flex-row gap-2 sm:gap-3">
                   <div className="flex-1">
                     <Popover
                       open={endDatePickerOpen}
@@ -497,7 +497,7 @@ export function EventForm({ onSubmitSuccess, onCancel }: IProps) {
         )}
 
         {/* Buttons */}
-        <div className="flex flex-col-reverse sm:flex-row gap-3 pt-4">
+        <div className="flex flex-col-reverse sm:flex-row gap-2 sm:gap-3 pt-3 sm:pt-4">
           <Button
             variant="outline"
             type="button"

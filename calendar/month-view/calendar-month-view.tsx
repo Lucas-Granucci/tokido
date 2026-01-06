@@ -29,7 +29,7 @@ export function CalendarMonthView({ singleDayEvents, multiDayEvents }: IProps) {
   );
 
   return (
-    <div className="flex flex-col h-full">
+    <div className="flex h-full flex-col">
       <div className="grid grid-cols-7 divide-x border-b">
         {WEEK_DAYS.map((day) => (
           <div key={day} className="flex items-center justify-center py-2">
@@ -41,7 +41,7 @@ export function CalendarMonthView({ singleDayEvents, multiDayEvents }: IProps) {
       </div>
 
       <div
-        className="grid grid-cols-7 overflow-hidden flex-1"
+        className="grid grid-cols-7 overflow-hidden flex-1 border-b"
         style={{
           gridTemplateRows: `repeat(${cells.length / 7}, minmax(0, 1fr))`,
         }}
