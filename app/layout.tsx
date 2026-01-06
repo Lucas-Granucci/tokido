@@ -35,7 +35,7 @@ export default async function RootLayout({ children }: RootLayoutProps) {
                 <EventsProvider>
                   <CreateDialogProvider>
                     <AppSidebar />
-                    <main className="flex flex-1 flex-col overflow-hidden p-6 pb-24 md:pb-6 min-h-0">
+                    <main className="flex flex-1 flex-col overflow-hidden p-4 pb-20 md:p-6 md:pb-6 min-h-0">
                       {children}
                     </main>
                     <MobileNav />

@@ -39,7 +39,7 @@ export default function CalendarPageClient() {
         onValueChange={handleViewChange}
       >
         <div className="flex flex-1 flex-col overflow-hidden rounded-lg border bg-background min-h-0">
-          <div className="p-4">
+          <div className="p-3 md:p-4">
             <CalendarHeader views={CalendarViews} activeView={activeView} />
           </div>
           <Separator />

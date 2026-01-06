@@ -28,7 +28,7 @@ export default function TasksPageClient() {
         className="flex w-full flex-1 flex-col overflow-hidden min-h-0"
       >
         <div className="flex flex-1 flex-col overflow-hidden rounded-lg border bg-background min-h-0">
-          <div className="p-4">
+          <div className="p-3 md:p-4">
             <div className="flex flex-col md:flex-row items-center justify-between gap-4 md:gap-0">
               <TabsList className="flex w-full h-10 md:h-9">
                 {TaskCategories.map((item) => (

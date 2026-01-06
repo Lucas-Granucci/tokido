@@ -98,7 +98,7 @@ export function AppSidebar() {
                   isActive={pathname === item.url}
                   className="data-[active=true]:bg-primary data-[active=true]:text-primary-foreground"
                 >
-                  <Link href={item.url}>
+                  <Link href={item.url} prefetch={false}>
                     <item.icon />
                     <span>{item.title}</span>
                   </Link>

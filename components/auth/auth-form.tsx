@@ -2,9 +2,12 @@
 
 import { toast } from "sonner";
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { signIn, signUp } from "@/lib/auth";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { useUser } from "@/contexts/user-context";
+import { supabase } from "@/lib/supabase/client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 export function AuthForm() {
@@ -14,6 +17,8 @@ export function AuthForm() {
   const [lastInitial, setLastInitial] = useState("");
   const [loading, setLoading] = useState(false);
   const [mode, setMode] = useState<"signin" | "signup">("signin");
+  const router = useRouter();
+  const { refreshSession } = useUser();
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -59,17 +64,30 @@ export function AuthForm() {
         const result = await signIn({ email, password });
 
         if (result?.error) {
-          if (result?.error) {
-            toast.error("Sign In Failed", {
-              description: result.error,
-              duration: 5000,
+          toast.error("Sign In Failed", {
+            description: result.error,
+            duration: 5000,
+          });
+        } else {
+          toast.success("Welcome Back!", {
+            description: `Successfully signed in with ${email}`,
+            duration: 4000,
+          });
+
+          if (result?.session?.access_token && result.session.refresh_token) {
+            const { error: setSessionError } = await supabase.auth.setSession({
+              access_token: result.session.access_token,
+              refresh_token: result.session.refresh_token,
             });
-          } else {
-            toast.success("Welcome Back!", {
-              description: `Successfully signed in with ${email}`,
-              duration: 4000,
-            });
+
+            if (setSessionError) {
+              console.error("Error syncing session:", setSessionError.message);
+            }
           }
+
+          await refreshSession();
+          router.replace("/");
+          router.refresh();
         }
       }
     } catch (error) {

@@ -2,6 +2,8 @@ import { signOut } from "@/lib/auth";
 import { useUser } from "@/contexts/user-context";
 import { ChevronsUpDown, LogOut, User2 } from "lucide-react";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { useRouter } from "next/navigation";
+import { supabase } from "@/lib/supabase/client";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -19,10 +21,25 @@ import {
 
 export function UserButton() {
   const { isMobile } = useSidebar();
-  const { user } = useUser();
+  const { user, refreshSession } = useUser();
+  const router = useRouter();
 
   const handleSignOut = async () => {
-    await signOut();
+    const result = await signOut();
+
+    if (result?.error) {
+      console.error("Error signing out:", result.error);
+      return;
+    }
+
+    const { error: clientError } = await supabase.auth.signOut();
+    if (clientError) {
+      console.error("Error clearing client session:", clientError.message);
+    }
+
+    await refreshSession();
+    router.replace("/");
+    router.refresh();
   };
 
   return (

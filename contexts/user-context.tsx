@@ -2,7 +2,13 @@
 
 import { supabase } from "@/lib/supabase/client";
 import { User, Session } from "@supabase/supabase-js";
-import React, { createContext, useContext, useEffect, useState } from "react";
+import React, {
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useState,
+} from "react";
 
 interface UserContextType {
   user: User | null;
@@ -19,12 +25,13 @@ interface UserContextProps {
 }
 
 export function UserProvider({ children, initialUser }: UserContextProps) {
-  const [user, setUser] = useState<User | null>(null);
+  const [user, setUser] = useState<User | null>(initialUser ?? null);
   const [session, setSession] = useState<Session | null>(null);
   const [loading, setLoading] = useState(true);
 
-  const refreshSession = async () => {
+  const refreshSession = useCallback(async () => {
     try {
+      setLoading(true);
       const {
         data: { session: currentSession },
       } = await supabase.auth.getSession();
@@ -35,18 +42,24 @@ export function UserProvider({ children, initialUser }: UserContextProps) {
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
+
+  useEffect(() => {
+    setUser(initialUser ?? null);
+    setLoading(false);
+  }, [initialUser]);
 
   useEffect(() => {
     if (!initialUser) {
       refreshSession();
     }
 
-    // Listen for auth changes
     const {
       data: { subscription },
-    } = supabase.auth.onAuthStateChange(async (event, currentSession) => {
-      console.log("Auth state changed:", event);
+    } = supabase.auth.onAuthStateChange((event, currentSession) => {
+      if (event === "INITIAL_SESSION") {
+        return;
+      }
       setSession(currentSession);
       setUser(currentSession?.user ?? null);
       setLoading(false);
@@ -55,7 +68,7 @@ export function UserProvider({ children, initialUser }: UserContextProps) {
     return () => {
       subscription.unsubscribe();
     };
-  }, [initialUser]);
+  }, [initialUser, refreshSession]);
 
   const value = {
     user,
