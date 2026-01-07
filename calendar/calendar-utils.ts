@@ -19,6 +19,8 @@ import {
   parseISO,
   startOfDay,
   isSameDay,
+  differenceInMinutes,
+  isWithinInterval,
 } from "date-fns";
 import type { CalendarViewType } from "@/types/views";
 import type { CalendarCell } from "./interfaces";
@@ -83,6 +85,78 @@ export function navigateDate(
 
   return operations[view](date, 1);
 }
+
+// ================ Week and day view helper functions ================ //
+
+export function getCurrentEvents(events: Event[]) {
+  const now = new Date();
+  return (
+    events.filter((event) =>
+      isWithinInterval(now, {
+        start: parseISO(event.start_date),
+        end: parseISO(event.end_date),
+      })
+    ) || null
+  );
+}
+
+export function groupEvents(dayEvents: Event[]) {
+  const sortedEvents = dayEvents.sort(
+    (a, b) =>
+      parseISO(a.start_date).getTime() - parseISO(b.start_date).getTime()
+  );
+  const groups: Event[][] = [];
+
+  for (const event of sortedEvents) {
+    const eventStart = parseISO(event.start_date);
+
+    let placed = false;
+    for (const group of groups) {
+      const lastEventInGroup = group[group.length - 1];
+      const lastEventEnd = parseISO(lastEventInGroup.end_date);
+
+      if (eventStart >= lastEventEnd) {
+        group.push(event);
+        placed = true;
+        break;
+      }
+    }
+
+    if (!placed) groups.push([event]);
+  }
+
+  return groups;
+}
+
+export function getEventBlockStyle(
+  event: Event,
+  day: Date,
+  groupIndex: number,
+  groupSize: number,
+  visibleHoursRange?: { from: number; to: number }
+) {
+  const startDate = parseISO(event.start_date);
+  const dayStart = new Date(day.setHours(0, 0, 0, 0));
+  const eventStart = startDate < dayStart ? dayStart : startDate;
+  const startMinutes = differenceInMinutes(eventStart, dayStart);
+
+  let top;
+
+  if (visibleHoursRange) {
+    const visibleStartMinutes = visibleHoursRange.from * 60;
+    const visibleEndMinutes = visibleHoursRange.to * 60;
+    const visibleRangeMinutes = visibleEndMinutes - visibleStartMinutes;
+    top = ((startMinutes - visibleStartMinutes) / visibleRangeMinutes) * 100;
+  } else {
+    top = (startMinutes / 1440) * 100;
+  }
+
+  const width = 100 / groupSize;
+  const left = groupIndex * width;
+
+  return { top: `${top}%`, width: `${width}%`, left: `${left}%` };
+}
+
 // ================================ Month View Helpers ================================
 export function getCalendarCells(selectedDate: Date): CalendarCell[] {
   const currentYear = selectedDate.getFullYear();
