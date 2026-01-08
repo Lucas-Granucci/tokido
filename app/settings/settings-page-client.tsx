@@ -12,6 +12,9 @@ import {
   MoreHorizontal,
   Palette,
   Sparkles,
+  Monitor,
+  Moon,
+  Sun,
 } from "lucide-react";
 
 import { calendarClient } from "@/calendar/calendarClient";
@@ -29,12 +32,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import {
-  Field,
-  FieldDescription,
-  FieldGroup,
-  FieldLabel,
-} from "@/components/ui/field";
+import { FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import {
   Select,
@@ -61,22 +59,13 @@ const ICON_OPTIONS = [
   { value: "Sparkles", label: "Sparkles", icon: Sparkles },
 ];
 
-const THEME_OPTIONS: SettingsTheme[] = ["light", "dark", "system"];
+const THEME_OPTIONS = [
+  { value: "light" as SettingsTheme, label: "Light", icon: Sun },
+  { value: "dark" as SettingsTheme, label: "Dark", icon: Moon },
+  { value: "system" as SettingsTheme, label: "System", icon: Monitor },
+];
 
-const ICON_BADGE_ELEMENTS = {
-  GraduationCap: <GraduationCap className="h-3 w-3" />,
-  Microscope: <Microscope className="h-3 w-3" />,
-  Code2: <Code2 className="h-3 w-3" />,
-  User: <User className="h-3 w-3" />,
-  Briefcase: <Briefcase className="h-3 w-3" />,
-  Palette: <Palette className="h-3 w-3" />,
-  Sparkles: <Sparkles className="h-3 w-3" />,
-  MoreHorizontal: <MoreHorizontal className="h-3 w-3" />,
-} as const;
-
-type IconKey = keyof typeof ICON_BADGE_ELEMENTS;
-
-function CategoryRow({
+function CategoryGridItem({
   category,
   onChange,
 }: {
@@ -84,65 +73,54 @@ function CategoryRow({
   onChange: (updated: SettingsCategory) => void;
 }) {
   return (
-    <div className="grid gap-3 rounded-lg border p-3 sm:p-4 md:grid-cols-[1fr_140px_180px] items-center">
-      <div className="flex flex-col gap-2">
-        <FieldLabel className="text-sm font-medium">Label</FieldLabel>
+    <div className="flex flex-col gap-2 rounded-lg border bg-card p-3 shadow-sm">
+      <div className="flex items-center gap-2">
+        <div className="relative h-9 w-9 shrink-0 overflow-hidden rounded-md border shadow-sm transition-opacity hover:opacity-90">
+          <div
+            className="absolute inset-0 flex items-center justify-center"
+            style={{ backgroundColor: category.color }}
+          />
+          <Input
+            type="color"
+            className="absolute inset-0 h-full w-full cursor-pointer opacity-0"
+            value={category.color}
+            onChange={(e) => onChange({ ...category, color: e.target.value })}
+            title="Pick color"
+          />
+        </div>
         <Input
           value={category.label}
           onChange={(e) => onChange({ ...category, label: e.target.value })}
-          placeholder="Category label"
+          className="h-9 flex-1"
+          placeholder="Category Label"
         />
-        <FieldDescription className="text-xs">
-          Shown in tasks and events.
-        </FieldDescription>
       </div>
 
-      <div className="flex flex-col gap-2">
-        <FieldLabel className="text-sm font-medium">Color</FieldLabel>
-        <div className="flex items-center gap-2">
-          <Input
-            type="color"
-            className="h-10 w-16 p-1"
-            value={category.color}
-            onChange={(e) => onChange({ ...category, color: e.target.value })}
-          />
-          <Input
-            value={category.color}
-            onChange={(e) => onChange({ ...category, color: e.target.value })}
-            placeholder="#2563EB"
-          />
-        </div>
-      </div>
-
-      <div className="flex flex-col gap-2">
-        <FieldLabel className="text-sm font-medium">Icon</FieldLabel>
+      <div className="flex items-center gap-2">
         <Select
           value={category.icon}
           onValueChange={(value) => onChange({ ...category, icon: value })}
         >
-          <SelectTrigger>
-            <SelectValue placeholder="Select icon" />
+          <SelectTrigger className="h-8 flex-1 text-xs">
+            <SelectValue placeholder="Icon" />
           </SelectTrigger>
           <SelectContent>
             {ICON_OPTIONS.map((option) => (
               <SelectItem key={option.value} value={option.value}>
                 <div className="flex items-center gap-2">
-                  <option.icon className="h-4 w-4" />
-                  {option.label}
+                  <option.icon className="h-3 w-3" />
+                  <span className="text-xs">{option.label}</span>
                 </div>
               </SelectItem>
             ))}
           </SelectContent>
         </Select>
-        <div className="flex items-center gap-2 text-xs text-muted-foreground">
-          <span
-            className="inline-flex h-6 w-6 items-center justify-center rounded-full border"
-            style={{ color: category.color }}
-          >
-            {ICON_BADGE_ELEMENTS[category.icon as IconKey] ??
-              ICON_BADGE_ELEMENTS.MoreHorizontal}
-          </span>
-        </div>
+        <Input
+          value={category.color}
+          onChange={(e) => onChange({ ...category, color: e.target.value })}
+          className="h-8 w-20 text-xs font-mono"
+          placeholder="#Hex"
+        />
       </div>
     </div>
   );
@@ -243,20 +221,15 @@ export default function SettingsPageClient() {
 
       const addVariant = (value?: string | null) => {
         if (!value) return;
-
         variants.add(value);
-
         const trimmed = value.trim();
-
         if (trimmed) variants.add(trimmed);
       };
 
       addVariant(previous.label);
 
       Array.from(variants)
-
         .filter((oldLabel) => oldLabel && oldLabel !== nextLabel)
-
         .forEach((oldLabel) => {
           const existing = renamePairs.get(oldLabel);
 
@@ -293,9 +266,7 @@ export default function SettingsPageClient() {
 
         renamePairs.forEach((newLabel, oldLabel) => {
           if (oldLabel === newLabel) return;
-
           renameOperations.push(tasksClient.renameCategory(oldLabel, newLabel));
-
           renameOperations.push(
             calendarClient.renameCategory(oldLabel, newLabel),
           );
@@ -303,7 +274,6 @@ export default function SettingsPageClient() {
 
         if (renameOperations.length > 0) {
           await Promise.all(renameOperations);
-
           await Promise.all([refreshTasks(), refreshEvents()]);
         }
       }
@@ -328,120 +298,116 @@ export default function SettingsPageClient() {
   if (loading) {
     return (
       <div className="flex h-full min-h-0 flex-col overflow-hidden">
-        <ScrollArea className="flex-1 min-h-0 pr-3 md:pr-0" type="always">
-          <div className="flex min-h-0 flex-col gap-4 pb-6">
-            <Skeleton className="h-32 w-full rounded-xl" />
-            <Skeleton className="h-[520px] w-full rounded-xl" />
-          </div>
-        </ScrollArea>
+        <Card className="mx-auto w-full">
+          <CardContent className="space-y-6">
+            <Skeleton className="h-12 w-full" />
+            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+              {Array.from({ length: 6 }).map((_, i) => (
+                <Skeleton key={i} className="h-24 rounded-lg" />
+              ))}
+            </div>
+          </CardContent>
+        </Card>
       </div>
     );
   }
 
   return (
     <div className="flex h-full min-h-0 flex-col overflow-hidden">
-      <ScrollArea className="flex-1 min-h-0 pr-3 md:pr-0" type="always">
-        <div className="flex min-h-0 flex-col gap-6 pb-6">
-          <div>
-            <h1 className="text-2xl font-semibold">Settings</h1>
-            <p className="text-muted-foreground">
-              Manage your appearance and category preferences.
-            </p>
-          </div>
-
-          <Card>
-            <CardHeader>
-              <CardTitle>Theme</CardTitle>
-              <CardDescription>
-                Choose your preferred appearance mode.
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <FieldGroup className="gap-4">
-                <Field>
-                  <FieldLabel className="text-sm font-medium">
-                    Theme selection
-                  </FieldLabel>
-                  <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
-                    {THEME_OPTIONS.map((option) => (
-                      <Button
-                        key={option}
-                        type="button"
-                        variant={theme === option ? "default" : "outline"}
-                        className="w-full justify-center"
-                        onClick={() => {
-                          setTheme(option);
-                          setSystemTheme(option);
-                        }}
-                      >
-                        {option.charAt(0).toUpperCase() + option.slice(1)}
-                      </Button>
-                    ))}
-                  </div>
-                </Field>
-              </FieldGroup>
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardHeader className="flex flex-row items-start justify-between gap-3">
-              <div>
-                <CardTitle>Categories</CardTitle>
-                <CardDescription>
-                  Customize labels, colors, and icons. Exactly 6 categories are
-                  stored.
-                </CardDescription>
+      <ScrollArea className="flex-1">
+        <Card className="mx-auto w-full">
+          <CardContent className="space-y-6">
+            {/* Theme Section */}
+            <div className="flex items-center justify-between gap-4">
+              <div className="space-y-0.5">
+                <FieldLabel className="text-base font-medium">Theme</FieldLabel>
+                <p className="text-sm text-muted-foreground">
+                  Select your preferred interface appearance.
+                </p>
               </div>
-              <Button
-                type="button"
-                variant="outline"
-                onClick={handleResetCategories}
-                disabled={saving}
-              >
-                Reset to defaults
-              </Button>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              {categories.map((category, idx) => (
-                <CategoryRow
-                  key={category.id ?? idx}
-                  category={category}
-                  onChange={(updated) => {
-                    setCategories((prev) =>
-                      prev.map((item) =>
-                        item.id === category.id
-                          ? { ...item, ...updated }
-                          : item,
-                      ),
-                    );
+              <div className="w-[180px] shrink-0">
+                <Select
+                  value={theme}
+                  onValueChange={(v) => {
+                    setTheme(v as SettingsTheme);
+                    setSystemTheme(v);
                   }}
-                />
-              ))}
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select theme" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {THEME_OPTIONS.map((option) => (
+                      <SelectItem key={option.value} value={option.value}>
+                        <div className="flex items-center gap-2">
+                          <option.icon className="h-4 w-4" />
+                          {option.label}
+                        </div>
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
 
+            <Separator />
+
+            {/* Categories Section */}
+            <div className="space-y-4">
+              <div className="flex items-center justify-between gap-4">
+                <div className="space-y-0.5">
+                  <FieldLabel className="text-base font-medium">
+                    Categories
+                  </FieldLabel>
+                  <p className="text-sm text-muted-foreground">
+                    Customize category labels, colors, and icons.
+                  </p>
+                </div>
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="sm"
+                  onClick={handleResetCategories}
+                  disabled={saving}
+                  className="text-muted-foreground hover:text-foreground"
+                >
+                  Reset defaults
+                </Button>
+              </div>
+
+              <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+                {categories.map((category, idx) => (
+                  <CategoryGridItem
+                    key={category.id ?? idx}
+                    category={category}
+                    onChange={(updated) => {
+                      setCategories((prev) =>
+                        prev.map((item) =>
+                          item.id === category.id
+                            ? { ...item, ...updated }
+                            : item,
+                        ),
+                      );
+                    }}
+                  />
+                ))}
+              </div>
               {categoryErrors["_count"] && (
                 <p className="text-sm text-destructive">
                   {categoryErrors["_count"]}
                 </p>
               )}
+            </div>
 
-              <Separator />
+            <Separator />
 
-              <div className="flex justify-end gap-3">
-                <Button
-                  type="button"
-                  variant="outline"
-                  onClick={handleResetCategories}
-                  disabled={saving}
-                >
-                  Reset
-                </Button>
-                <Button type="button" onClick={handleSave} disabled={saving}>
-                  {saving ? "Saving..." : "Save changes"}
-                </Button>
-              </div>
-            </CardContent>
-          </Card>
-        </div>
+            <div className="flex justify-end">
+              <Button type="button" onClick={handleSave} disabled={saving}>
+                {saving ? "Saving..." : "Save Changes"}
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
       </ScrollArea>
     </div>
   );
