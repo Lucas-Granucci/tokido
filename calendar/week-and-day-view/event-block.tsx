@@ -2,7 +2,7 @@ import { format, differenceInMinutes, parseISO } from "date-fns";
 
 import { EventDetailsDialog } from "../dialogs/event-details-dialog";
 import { cn } from "@/lib/utils";
-import { getCategoryColor, getEventBadgeClasses } from "@/utils/config-utils";
+import { useCategoryConfig } from "@/hooks/use-category-config";
 
 import type { HTMLAttributes } from "react";
 import { Event } from "../interfaces";
@@ -12,6 +12,8 @@ interface IProps extends HTMLAttributes<HTMLDivElement> {
 }
 
 export function EventBlock({ event, className, style, ...rest }: IProps) {
+  const { getEventBadgeClasses, getCategoryColor, getEventBadgeStyle } =
+    useCategoryConfig();
   const start = parseISO(event.start_date);
   const end = parseISO(event.end_date);
   const durationInMinutes = differenceInMinutes(end, start);
@@ -37,7 +39,11 @@ export function EventBlock({ event, className, style, ...rest }: IProps) {
         role="button"
         tabIndex={0}
         className={calendarWeekEventCardClasses}
-        style={{ ...style, height: `${heightInPixels}px` }}
+        style={{
+          ...getEventBadgeStyle(event.category),
+          ...style,
+          height: `${heightInPixels}px`,
+        }}
         onKeyDown={handleKeyDown}
         {...rest}
       >

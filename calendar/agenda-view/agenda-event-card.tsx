@@ -5,8 +5,8 @@ import { Clock, Text } from "lucide-react";
 
 import { EventDetailsDialog } from "../dialogs/event-details-dialog";
 import { Event } from "../interfaces";
-import { getCategoryColor, getEventBadgeClasses } from "@/utils/config-utils";
 import { cn } from "@/lib/utils";
+import { useCategoryConfig } from "@/hooks/use-category-config";
 
 interface IProps {
   event: Event;
@@ -19,6 +19,8 @@ export function AgendaEventCard({
   eventCurrentDay,
   eventTotalDays,
 }: IProps) {
+  const { getCategoryColor, getEventBadgeClasses, getEventBadgeStyle } =
+    useCategoryConfig();
   const startDate = parseISO(event.start_date);
   const endDate = parseISO(event.end_date);
 
@@ -44,6 +46,7 @@ export function AgendaEventCard({
           "flex select-none items-center justify-between gap-3 rounded-md border p-3 text-sm focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring",
           getEventBadgeClasses(event.category)
         )}
+        style={getEventBadgeStyle(event.category)}
         onKeyDown={handleKeyDown}
       >
         <div className="flex flex-col gap-2 w-full">

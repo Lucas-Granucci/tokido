@@ -5,8 +5,8 @@ import { cn } from "@/lib/utils";
 
 import type { Event } from "../interfaces";
 import type { VariantProps } from "class-variance-authority";
-import { getCategoryColor, getEventBadgeClasses } from "@/utils/config-utils";
 import { EventDetailsDialog } from "../dialogs/event-details-dialog";
+import { useCategoryConfig } from "@/hooks/use-category-config";
 
 const eventBadgeVariants = cva(
   "mx-1 flex size-auto h-6.5 select-none items-center justify-between gap-1.5 truncate whitespace-nowrap rounded-md border px-2 text-xs focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring",
@@ -45,6 +45,8 @@ export function MonthEventBadge({
   className,
   position: propPosition,
 }: IProps) {
+  const { getEventBadgeClasses, getEventBadgeStyle } = useCategoryConfig();
+
   const itemStart = startOfDay(parseISO(event.start_date));
   const itemEnd = endOfDay(parseISO(event.end_date));
 
@@ -91,11 +93,7 @@ export function MonthEventBadge({
     }
   };
 
-  const badgeStyle = isAllDay
-    ? {
-        borderColor: getCategoryColor(event.category),
-      }
-    : undefined;
+  const badgeStyle = getEventBadgeStyle(event.category);
 
   return (
     <EventDetailsDialog event={event}>

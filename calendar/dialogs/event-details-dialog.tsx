@@ -17,8 +17,8 @@ import {
 import { Event } from "../interfaces";
 import { calendarClient } from "../calendarClient";
 import { useEvents } from "@/contexts/events-context";
-import presentationConfigs from "@/utils/presentation-configs";
 import { EditEventDialog } from "./edit-event-dialog";
+import { useCategoryConfig } from "@/hooks/use-category-config";
 
 interface EventDetailsDialogProps {
   event: Event;
@@ -32,11 +32,10 @@ export function EventDetailsDialog({
   const [open, setOpen] = useState(false);
   const [deleting, setDeleting] = useState(false);
   const { refreshEvents } = useEvents();
+  const { getCategory } = useCategoryConfig();
 
-  const categoryConfig = Object.values(presentationConfigs.category).find(
-    (c) => c.label === event.category
-  );
-  const CategoryIcon = categoryConfig?.icon || Tag;
+  const categoryConfig = getCategory(event.category);
+  const CategoryIcon = categoryConfig?.Icon || Tag;
 
   const handleDelete = async () => {
     setDeleting(true);
@@ -68,7 +67,9 @@ export function EventDetailsDialog({
             <CategoryIcon className="mt-0.5 h-5 w-5 text-muted-foreground" />
             <div className="grid gap-0.5">
               <p className="text-sm font-medium leading-none">Category</p>
-              <p className="text-sm text-muted-foreground">{event.category}</p>
+              <p className="text-sm text-muted-foreground">
+                {categoryConfig?.label ?? event.category ?? "Uncategorized"}
+              </p>
             </div>
           </div>
 

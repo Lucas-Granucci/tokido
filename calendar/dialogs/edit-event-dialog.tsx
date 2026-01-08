@@ -35,7 +35,7 @@ import {
 
 import { calendarClient } from "../calendarClient";
 import type { Event, EventFormData } from "../interfaces";
-import presentationConfigs from "@/utils/presentation-configs";
+import { useCategoryConfig } from "@/hooks/use-category-config";
 import { cn } from "@/lib/utils";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
@@ -64,6 +64,7 @@ export function EditEventDialog({ event, children }: IProps) {
   const [endTime, setEndTime] = useState("17:00");
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
+  const { categories } = useCategoryConfig();
   const { refreshEvents } = useEvents();
 
   // Initialize form with event data
@@ -101,13 +102,13 @@ export function EditEventDialog({ event, children }: IProps) {
           `${start.getHours().toString().padStart(2, "0")}:${start
             .getMinutes()
             .toString()
-            .padStart(2, "0")}`
+            .padStart(2, "0")}`,
         );
         setEndTime(
           `${end.getHours().toString().padStart(2, "0")}:${end
             .getMinutes()
             .toString()
-            .padStart(2, "0")}`
+            .padStart(2, "0")}`,
         );
       }
     }
@@ -290,10 +291,10 @@ export function EditEventDialog({ event, children }: IProps) {
                     <SelectValue placeholder="Select category" />
                   </SelectTrigger>
                   <SelectContent>
-                    {Object.values(presentationConfigs.category).map((item) => (
-                      <SelectItem key={item.label} value={item.label}>
+                    {categories.map((item) => (
+                      <SelectItem key={item.id} value={item.id}>
                         <div className="flex items-center gap-2">
-                          {item.icon && <item.icon className="h-4 w-4" />}
+                          {item.Icon && <item.Icon className="h-4 w-4" />}
                           {item.label}
                         </div>
                       </SelectItem>
@@ -369,7 +370,7 @@ export function EditEventDialog({ event, children }: IProps) {
                           className={cn(
                             "w-full justify-start text-left font-normal",
                             !formData.start_date && "text-muted-foreground",
-                            errors.start_date && "border-destructive"
+                            errors.start_date && "border-destructive",
                           )}
                         >
                           <CalendarIcon className="mr-2 h-4 w-4" />
@@ -448,7 +449,7 @@ export function EditEventDialog({ event, children }: IProps) {
                             className={cn(
                               "w-full justify-start text-left font-normal",
                               !formData.start_date && "text-muted-foreground",
-                              errors.start_date && "border-destructive"
+                              errors.start_date && "border-destructive",
                             )}
                           >
                             <CalendarIcon className="mr-2 h-4 w-4" />
@@ -516,7 +517,7 @@ export function EditEventDialog({ event, children }: IProps) {
                               className={cn(
                                 "w-full justify-start text-left font-normal",
                                 !formData.end_date && "text-muted-foreground",
-                                errors.end_date && "border-destructive"
+                                errors.end_date && "border-destructive",
                               )}
                             >
                               <CalendarIcon className="mr-2 h-4 w-4" />

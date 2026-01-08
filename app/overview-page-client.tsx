@@ -17,6 +17,7 @@ import {
   parseISO,
   startOfDay,
 } from "date-fns";
+import type { CSSProperties } from "react";
 
 import {
   Card,
@@ -30,11 +31,8 @@ import { Separator } from "@/components/ui/separator";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { useTasks } from "@/contexts/tasks-context";
 import { useEvents } from "@/contexts/events-context";
-import {
-  getCategoryColor,
-  getEventBadgeClasses,
-  getPriorityColor,
-} from "@/utils/config-utils";
+import { getPriorityColor } from "@/utils/config-utils";
+import { useCategoryConfig } from "@/hooks/use-category-config";
 const safeParseDate = (value?: string | null) => {
   if (!value) return null;
   const date = parseISO(value);
@@ -44,6 +42,12 @@ const safeParseDate = (value?: string | null) => {
 export default function OverviewPageClient() {
   const { tasks, loading: tasksLoading } = useTasks();
   const { events, loading: eventsLoading } = useEvents();
+  const {
+    getCategory,
+    getCategoryColor,
+    getEventBadgeClasses,
+    getEventBadgeStyle,
+  } = useCategoryConfig();
 
   const today = startOfDay(new Date());
   const now = new Date();
@@ -136,7 +140,7 @@ export default function OverviewPageClient() {
       </div>
 
       <div className="grid flex-1 min-h-0 gap-3 sm:gap-4 lg:grid-cols-2">
-        <Card className="flex flex-col overflow-hidden min-h-[320px] max-h-[55vh] sm:max-h-none">
+        <Card className="flex flex-col overflow-hidden min-h-80 max-h-[55vh] sm:max-h-none">
           <CardHeader className="space-y-0 px-3 py-2 sm:px-5 sm:py-2.5">
             <div className="flex items-center justify-between gap-2">
               <CardTitle>Task Overview</CardTitle>
@@ -155,18 +159,26 @@ export default function OverviewPageClient() {
                   tone="destructive"
                   tasks={tasksOverdue}
                   empty="You're all caught up!"
+                  getCategoryColor={getCategoryColor}
+                  getCategory={getCategory}
                 />
+
                 <TaskGroup
                   title="Due Soon"
                   tone="warning"
                   tasks={tasksDueSoon}
                   empty="No tasks due soon."
+                  getCategoryColor={getCategoryColor}
+                  getCategory={getCategory}
                 />
+
                 <TaskGroup
                   title="No Due Date"
                   tone="neutral"
                   tasks={tasksNoDueDate}
                   empty="Everything has a date."
+                  getCategoryColor={getCategoryColor}
+                  getCategory={getCategory}
                 />
               </section>
             </ScrollArea>
@@ -192,18 +204,24 @@ export default function OverviewPageClient() {
                   tone="success"
                   events={eventsToday}
                   empty="No events today."
+                  getEventBadgeStyle={getEventBadgeStyle}
+                  getEventBadgeClasses={getEventBadgeClasses}
                 />
                 <EventGroup
                   title="This Week"
                   tone="warning"
                   events={eventsThisWeek}
                   empty="Nothing scheduled this week."
+                  getEventBadgeStyle={getEventBadgeStyle}
+                  getEventBadgeClasses={getEventBadgeClasses}
                 />
                 <EventGroup
                   title="Upcoming"
                   tone="neutral"
                   events={upcomingEvents}
                   empty="No upcoming events."
+                  getEventBadgeStyle={getEventBadgeStyle}
+                  getEventBadgeClasses={getEventBadgeClasses}
                 />
               </section>
             </ScrollArea>
@@ -276,12 +294,31 @@ function StatCard({
 
 interface TaskGroupProps {
   title: string;
+
   tasks: ReturnType<typeof useTasks>["tasks"];
+
   empty: string;
+
   tone: Tone;
+
+  getCategoryColor: (label?: string | null) => string;
+
+  getCategory: ReturnType<typeof useCategoryConfig>["getCategory"];
 }
 
-function TaskGroup({ title, tasks, empty, tone }: TaskGroupProps) {
+function TaskGroup({
+  title,
+
+  tasks,
+
+  empty,
+
+  tone,
+
+  getCategoryColor,
+
+  getCategory,
+}: TaskGroupProps) {
   return (
     <div className="space-y-3">
       <div className="flex items-center gap-2">
@@ -297,7 +334,10 @@ function TaskGroup({ title, tasks, empty, tone }: TaskGroupProps) {
         <div className="grid gap-1 md:grid-cols-2">
           {tasks.map((task) => {
             const priorityColor = getPriorityColor(task.priority);
+
             const categoryColor = getCategoryColor(task.category);
+
+            const category = getCategory(task.category);
             return (
               <div
                 key={task.id}
@@ -319,15 +359,17 @@ function TaskGroup({ title, tasks, empty, tone }: TaskGroupProps) {
                 <div className="flex items-center gap-2 text-xs text-muted-foreground">
                   <CalendarClock className="h-3.5 w-3.5" />
                   <span>{new Date(task.due_date).toLocaleDateString()}</span>
+
                   <Badge
                     variant="secondary"
                     className="ml-auto text-[0.7rem]"
                     style={{
                       backgroundColor: `${categoryColor}14`,
+
                       color: categoryColor,
                     }}
                   >
-                    {task.category}
+                    {category?.label ?? "Uncategorized"}
                   </Badge>
                 </div>
               </div>
@@ -344,9 +386,18 @@ interface EventGroupProps {
   events: ReturnType<typeof useEvents>["events"];
   empty: string;
   tone: Tone;
+  getEventBadgeStyle: (label?: string | null) => CSSProperties;
+  getEventBadgeClasses: (label?: string | null) => string;
 }
 
-function EventGroup({ title, events, empty, tone }: EventGroupProps) {
+function EventGroup({
+  title,
+  events,
+  empty,
+  tone,
+  getEventBadgeStyle,
+  getEventBadgeClasses,
+}: EventGroupProps) {
   return (
     <div className="space-y-3">
       <div className="flex items-center gap-2">
@@ -360,25 +411,29 @@ function EventGroup({ title, events, empty, tone }: EventGroupProps) {
         <p className="text-sm text-muted-foreground">{empty}</p>
       ) : (
         <div className="space-y-2">
-          {events.map((event) => (
-            <div
-              key={event.id}
-              className={`flex items-center gap-2.5 rounded-lg border p-2 text-sm transition hover:bg-muted/50 sm:p-3 ${getEventBadgeClasses(
-                event.category,
-              )}`}
-            >
-              <div className="flex flex-col gap-1">
-                <div className="flex items-center gap-2">
-                  <CalendarRange className="h-4 w-4" />
-                  <p className="font-medium leading-tight">{event.name}</p>
+          {events.map((event) => {
+            const badgeStyle = getEventBadgeStyle(event.category);
+            return (
+              <div
+                key={event.id}
+                className={`flex items-center gap-2.5 rounded-lg border p-2 text-sm transition hover:bg-muted/50 sm:p-3 ${getEventBadgeClasses(
+                  event.category,
+                )}`}
+                style={badgeStyle}
+              >
+                <div className="flex flex-col gap-1">
+                  <div className="flex items-center gap-2">
+                    <CalendarRange className="h-4 w-4" />
+                    <p className="font-medium leading-tight">{event.name}</p>
+                  </div>
+                  <p className="text-xs text-muted-foreground">
+                    {new Date(event.start_date).toLocaleString()} —{" "}
+                    {new Date(event.end_date).toLocaleString()}
+                  </p>
                 </div>
-                <p className="text-xs text-muted-foreground">
-                  {new Date(event.start_date).toLocaleString()} —{" "}
-                  {new Date(event.end_date).toLocaleString()}
-                </p>
               </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
       )}
     </div>

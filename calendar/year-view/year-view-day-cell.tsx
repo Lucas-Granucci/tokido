@@ -2,7 +2,7 @@ import { isToday } from "date-fns";
 
 import { useEvents } from "@/contexts/events-context";
 import { cn } from "@/lib/utils";
-import { getCategoryColor } from "@/utils/config-utils";
+import { useCategoryConfig } from "@/hooks/use-category-config";
 
 import { Event } from "@/calendar/interfaces";
 
@@ -14,6 +14,7 @@ interface IProps {
 
 export function YearViewDayCell({ day, date, events }: IProps) {
   const { setSelectedDate } = useEvents();
+  const { getCategoryColor } = useCategoryConfig();
 
   const maxIndicators = 3;
   const eventCount = events.length;

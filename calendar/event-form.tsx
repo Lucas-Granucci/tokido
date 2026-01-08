@@ -26,7 +26,7 @@ import {
 
 import { calendarClient } from "./calendarClient";
 import type { EventFormData } from "./interfaces";
-import presentationConfigs from "@/utils/presentation-configs";
+import { useCategoryConfig } from "@/hooks/use-category-config";
 import { cn } from "@/lib/utils";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
@@ -53,6 +53,7 @@ export function EventForm({ onSubmitSuccess, onCancel }: IProps) {
   const [endTime, setEndTime] = useState("17:00");
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
+  const { categories } = useCategoryConfig();
 
   // Helper function to combine date and time
   const combineDateAndTime = (date: Date, time: string): Date => {
@@ -232,10 +233,11 @@ export function EventForm({ onSubmitSuccess, onCancel }: IProps) {
                 <SelectValue placeholder="Select category" />
               </SelectTrigger>
               <SelectContent>
-                {Object.values(presentationConfigs.category).map((item) => (
-                  <SelectItem key={item.label} value={item.label}>
+                {categories.map((item) => (
+                  <SelectItem key={item.id} value={item.id}>
                     <div className="flex items-center gap-2">
-                      {item.icon && <item.icon className="h-4 w-4" />}
+                      {item.Icon && <item.Icon className="h-4 w-4" />}
+
                       {item.label}
                     </div>
                   </SelectItem>
@@ -309,7 +311,7 @@ export function EventForm({ onSubmitSuccess, onCancel }: IProps) {
                       className={cn(
                         "w-full justify-start text-left font-normal",
                         !formData.start_date && "text-muted-foreground",
-                        errors.start_date && "border-destructive"
+                        errors.start_date && "border-destructive",
                       )}
                     >
                       <CalendarIcon className="mr-2 h-4 w-4" />
@@ -383,7 +385,7 @@ export function EventForm({ onSubmitSuccess, onCancel }: IProps) {
                         className={cn(
                           "w-full justify-start text-left font-normal",
                           !formData.start_date && "text-muted-foreground",
-                          errors.start_date && "border-destructive"
+                          errors.start_date && "border-destructive",
                         )}
                       >
                         <CalendarIcon className="mr-2 h-4 w-4" />
@@ -448,7 +450,7 @@ export function EventForm({ onSubmitSuccess, onCancel }: IProps) {
                           className={cn(
                             "w-full justify-start text-left font-normal",
                             !formData.end_date && "text-muted-foreground",
-                            errors.end_date && "border-destructive"
+                            errors.end_date && "border-destructive",
                           )}
                         >
                           <CalendarIcon className="mr-2 h-4 w-4" />

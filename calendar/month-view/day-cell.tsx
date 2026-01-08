@@ -5,7 +5,7 @@ import { getMonthCellEvents } from "../calendar-utils";
 import { cn } from "@/lib/utils";
 import { isToday, startOfDay } from "date-fns";
 import { MonthEventBadge } from "./month-event-badge";
-import { getCategoryColor } from "@/utils/config-utils";
+import { useCategoryConfig } from "@/hooks/use-category-config";
 
 interface IProps {
   cell: CalendarCell;
@@ -25,6 +25,7 @@ export function DayCell({
   isLastRow,
 }: IProps) {
   const { setSelectedDate } = useEvents();
+  const { getCategoryColor } = useCategoryConfig();
   const { day, currentMonth, date } = cell;
 
   const cellEvents = useMemo(

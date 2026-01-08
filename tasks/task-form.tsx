@@ -26,8 +26,9 @@ import {
 
 import { tasksClient } from "@/tasks/tasksClient";
 import type { TaskFormData } from "@/tasks/interfaces";
-import presentationConfigs from "@/utils/presentation-configs";
+import { useCategoryConfig } from "@/hooks/use-category-config";
 import { cn } from "@/lib/utils";
+import presentationConfigs from "@/utils/presentation-configs";
 
 interface TaskFormProps {
   onSubmitSuccess: () => void;
@@ -47,6 +48,7 @@ export function TaskForm({ onSubmitSuccess, onCancel }: TaskFormProps) {
   const [minutes, setMinutes] = useState(0);
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
+  const { categories } = useCategoryConfig();
 
   const validateForm = () => {
     const newErrors: Record<string, string> = {};
@@ -158,10 +160,10 @@ export function TaskForm({ onSubmitSuccess, onCancel }: TaskFormProps) {
                 <SelectValue placeholder="Select category" />
               </SelectTrigger>
               <SelectContent>
-                {Object.values(presentationConfigs.category).map((item) => (
-                  <SelectItem key={item.label} value={item.label}>
+                {categories.map((item) => (
+                  <SelectItem key={item.id} value={item.id}>
                     <div className="flex items-center gap-2">
-                      {item.icon && <item.icon className="h-4 w-4" />}
+                      {item.Icon && <item.Icon className="h-4 w-4" />}
                       {item.label}
                     </div>
                   </SelectItem>
@@ -223,7 +225,7 @@ export function TaskForm({ onSubmitSuccess, onCancel }: TaskFormProps) {
                     placeholder="0"
                     className={cn(
                       "w-full",
-                      errors.duration && "border-destructive"
+                      errors.duration && "border-destructive",
                     )}
                     value={hours}
                     onChange={(e) => {
@@ -247,7 +249,7 @@ export function TaskForm({ onSubmitSuccess, onCancel }: TaskFormProps) {
                     placeholder="0"
                     className={cn(
                       "w-full",
-                      errors.duration && "border-destructive"
+                      errors.duration && "border-destructive",
                     )}
                     value={minutes}
                     onChange={(e) => {
@@ -273,7 +275,7 @@ export function TaskForm({ onSubmitSuccess, onCancel }: TaskFormProps) {
                   variant="outline"
                   className={cn(
                     "w-full justify-start text-left font-normal",
-                    !formData.dueDate && "text-muted-foreground"
+                    !formData.dueDate && "text-muted-foreground",
                   )}
                 >
                   <CalendarIcon className="mr-2 h-4 w-4" />

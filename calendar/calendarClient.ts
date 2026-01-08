@@ -80,4 +80,22 @@ export const calendarClient = {
 
     if (error) throw error;
   },
+
+  async renameCategory(oldLabel: string, newLabel: string): Promise<void> {
+    const trimmedNewLabel = newLabel.trim();
+    if (!trimmedNewLabel) return;
+
+    const { user } = await getCurrentUserClient();
+    if (!user) throw new Error("Not authenticated");
+
+    if (oldLabel === trimmedNewLabel) return;
+
+    const { error } = await supabase
+      .from("events")
+      .update({ category: trimmedNewLabel })
+      .eq("user_id", user.id)
+      .eq("category", oldLabel);
+
+    if (error) throw error;
+  },
 };

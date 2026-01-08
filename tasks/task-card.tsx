@@ -8,13 +8,10 @@ import { Button } from "../components/ui/button";
 import { Card, CardContent } from "../components/ui/card";
 import { motion, AnimatePresence } from "framer-motion";
 
-import {
-  getPriorityColor,
-  getDurationColor,
-  getCategoryColor,
-} from "@/utils/config-utils";
+import { getPriorityColor, getDurationColor } from "@/utils/config-utils";
 import type { Task } from "./interfaces";
 import { useTasks } from "@/contexts/tasks-context";
+import { useCategoryConfig } from "@/hooks/use-category-config";
 
 interface IProps {
   task: Task;
@@ -24,9 +21,11 @@ export default function TaskCard({ task }: IProps) {
   const buttonRef = useRef<HTMLButtonElement>(null);
   const { deleteTask } = useTasks();
   const [isDeleting, setIsDeleting] = useState(false);
+  const { getCategoryColor, getCategory } = useCategoryConfig();
 
   const priorityColor = getPriorityColor(task.priority);
   const categoryColor = getCategoryColor(task.category);
+  const categoryLabel = getCategory(task.category)?.label ?? "Uncategorized";
   const durationColor = getDurationColor(task.duration);
 
   const handleDelete = () => {
@@ -96,7 +95,7 @@ export default function TaskCard({ task }: IProps) {
                     color: categoryColor,
                   }}
                 >
-                  {task.category}
+                  {categoryLabel}
                 </Badge>
                 <Badge
                   className="text-[0.65rem] sm:text-xs"
